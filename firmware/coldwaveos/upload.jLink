@@ -1,0 +1,7 @@
+device EFR32MG24BXXXF1536
+        si 1
+        speed auto
+        r
+        h
+        loadfile /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-debug-gnu-toolchain/Lightbike.signed.bin 0x8008000
+        q

@@ -1,0 +1,4 @@
+Filters
+- When a filter is called, it will apply some transofmration to
+    the LEDs of globals
+

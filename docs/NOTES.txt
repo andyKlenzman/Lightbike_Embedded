@@ -1,0 +1,32 @@
+- Got the basic functionality up and runnning.
+
+The next step is to build out the basic layer that will allow me to make extensible functionality
+
+
+It makes sense only to build with the accelerometer and LEDs, since the gyroscope functionalyitz will be similar
+and will only add complexity in the meantime.
+
+if I build out the git repo adn get feedback from people, can work and using an interface that makes sense.
+
+becomes a cmake project as well, because I can figure out how to build out these bundles.
+
+
+GOAL: every day give the boring stuff due time before getting into the coding.
+Next week, do the most boring things first.
+- GH repo
+- CMAKE changes
+- error handeling
+- anything else on the code review list
+
+Outside of that: priority is to get the VISA in, begin GH project for people adding changes to the repo.
+
+Structure of the extensible architecture
+- Have global variables each LED filter can use to interact with
+- Each LED filter can have infinite complexity, but always inputs and outputs some sort of
+transformation to a frame of LEDs . could include rate change, last frame of LEDS, maybe it contains the last value,
+so if they want it can build off the last one.
+    - depending on greatest direction of acceleration, one color gets higher or the other lower, with a smooth controlled train rate
+
+These can have filter groups, which can be combined and overlapped
+This is paired with an abstraction layer, to allow experimentation with user interfaces, if a button press or something otherwise will change it.
+
