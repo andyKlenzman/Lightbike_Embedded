@@ -14,7 +14,7 @@
 #if defined (__cplusplus)
 extern "C" {
 #endif
-void led_strip_init(int num_pixels);
+int led_strip_init(int num_pixels);
 void led_strip_white_balance (float r, float g, float b);
 int  led_strip_set_led(uint16_t index, uint8_t red, uint8_t green, uint8_t blue);
 int  led_strip_get_num_pixels();

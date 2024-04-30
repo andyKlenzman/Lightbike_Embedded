@@ -16,8 +16,7 @@ sysconf_create_device("silabs-gecko-spi", spi0, 0x5005C000UL,
                       sysconf_set_int_param (gpio_cs, 200))
 
 
-
-// address found on pg 46 of EFR32xG24 Wireless SoC Reference Manual
+                      //address found on pg 46 of EFR32xG24 Wireless SoC Reference Manual
 sysconf_create_device("silabs-gecko-i2c", i2c1, 0x50068000UL,
                       sysconf_set_int_param (gpio_scl, 205),
                       sysconf_set_int_param (gpio_sda, 207),

@@ -29,12 +29,12 @@ add_executable(Lightbike
         src/drivers/ws2812b.h
         src/drivers/ws2812b.c
         src/sysconfig.c
-
         src/drivers/icm20689.cpp
         src/drivers/icm20689.h
         src/drivers/icm20649_register_defs.h
         src/utils/combine_bytes.c
         src/utils/map_value.c
+        src/utils/gamma8_table.c
 )
 
 include(coldwaveos/CMakeLists.cmake)

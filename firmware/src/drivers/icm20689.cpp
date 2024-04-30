@@ -29,35 +29,66 @@ uint8_t *p_icm_write_buffer;
  * @note The read buffer is used to store data received from the ICM.
  *       The write buffer is used to store data that will be transmitted to the ICM.
  ***********************************************/
-void icm_20649_init ()
+int icm_20649_init ()
 {
     p_icm_read_buffer = (uint8_t *) malloc (ICM_READ_BUFFER_SIZE_BYTES);
     p_icm_write_buffer = (uint8_t *) malloc (ICM_WRITE_BUFFER_SIZE_BYTES);
+
+    if (p_icm_read_buffer == NULL || p_icm_write_buffer == NULL) {
+        LOG_ERROR("Failed to allocate memory for read and write buffer.");
+        return -1;
+    }
+
     memset (p_icm_read_buffer , 0, ICM_READ_BUFFER_SIZE_BYTES);
     memset (p_icm_write_buffer , 0, ICM_WRITE_BUFFER_SIZE_BYTES);
 
     i2c_device = open ("i2c1");
-    // sets the device to i2c mode
-    icm_20649_write_reg (ICM_20649_B0_PWR_MGMT_1, ICM_20649_B0_PWR_MGMT_1_SETTINGS);
+    if (i2c_device == -1) {
+        LOG_ERROR("I2C driver failed to open.");
+        return -1;
+    }
+
+    int result = icm_20649_write_reg (ICM_20649_B0_PWR_MGMT_1, ICM_20649_B0_PWR_MGMT_1_SETTINGS);
+    if (result == -1){
+        LOG_ERROR("Failed to write initialization settings to ICM_20649.");
+        return -1;
+    }
+
+    result = icm_20649_init_accel ();
+    if(result == -1) {
+        LOG_ERROR("Failed to initialize the ICM_20649 Accelerometer.");
+        return -1;
+
+    }
+
+    result = icm_20649_write_reg (ICM_20649_BX_REG_BANK_SEL, ICM_20649_REG_BANK_SEL_SETTINGS(0)); //config to bank 2
+    if(result == -1) {
+        LOG_ERROR("Failed to select register bank 0.");
+        return -1;
+    }
 
 
-    icm_20649_init_accel ();
-    icm_20649_write_reg (ICM_20649_BX_REG_BANK_SEL, ICM_20649_REG_BANK_SEL_SETTINGS(0)); //config to bank 2
 
+    return 0;
 }
 
 
-void icm_20649_init_accel ()
+int icm_20649_init_accel ()
 {
-    icm_20649_write_reg (ICM_20649_BX_REG_BANK_SEL, ICM_20649_REG_BANK_SEL_SETTINGS(2)); //config to bank 2
-    icm_20649_write_reg (ICM_20649_B2_ACCEL_CONFIG, ICM_20649_B2_ACCEL_CONFIG_SETTINGS);
+    int result;
+    result = icm_20649_write_reg (ICM_20649_BX_REG_BANK_SEL, ICM_20649_REG_BANK_SEL_SETTINGS(2)); //config to bank 2
+    if(result == -1) {
+        LOG_ERROR("Failed to select register bank 2 in init_accel.");
+        return -1;
+    }
 
-    uint8_t read_buffer_value = icm_20649_read_reg_and_return_val (ICM_20649_BX_REG_BANK_SEL);
-    LOG_DEBUG("init accel bank select = %u", read_buffer_value);
+    result = icm_20649_write_reg (ICM_20649_B2_ACCEL_CONFIG, ICM_20649_B2_ACCEL_CONFIG_SETTINGS);
+    if(result == -1) {
+        LOG_ERROR("Failed to set accelerometer setting in init_accel.");
+        return -1;
+    }
 
-    read_buffer_value = icm_20649_read_reg_and_return_val (ICM_20649_B2_ACCEL_CONFIG);
-    LOG_DEBUG("init accel config settings = %u", read_buffer_value);
-
+    return 0;
 }
 
 
@@ -72,29 +103,19 @@ void icm_20649_init_accel ()
  * @note The read buffer (`p_icm_read_buffer`) is used to store the data read
  *       from the register.
  ***********************************************/
-void icm_20649_read_reg (uint8_t reg) {
-    int returnVal = i2c_read_reg(i2c_device,
-                                 ICM_20649_DEVICE_ADDRESS,
-                                 reg,
-                                 p_icm_read_buffer,
-                                 ICM_READ_BUFFER_SIZE_BYTES);
-    if(returnVal == 0){
-        LOG_DEBUG("icm_20649_read_reg(): Successfully read data from register 0x%02X.", reg);
-    } else {
-        LOG_ERROR("icm_20649_read_reg(): Failed to read data from register 0x%02X.", reg);
-    }
-}
 
-uint8_t icm_20649_read_reg_and_return_val (uint8_t reg) {
-    int returnVal = i2c_read_reg(i2c_device,
+
+uint8_t  -1 icm_20649_return_register_val (uint8_t reg) {
+    int result = i2c_read_reg(i2c_device,
                                  ICM_20649_DEVICE_ADDRESS,
                                  reg,
                                  p_icm_read_buffer,
                                  ICM_READ_BUFFER_SIZE_BYTES);
-    if(returnVal == 0){
-        LOG_DEBUG("icm_20649_read_reg(): Successfully read data from register 0x%02X.", reg);
-    } else {
+
+
+    if(result == -1){
         LOG_ERROR("icm_20649_read_reg(): Failed to read data from register 0x%02X.", reg);
+        return -1;
     }
 
     return *p_icm_read_buffer;
@@ -126,7 +147,7 @@ uint8_t icm_20649_get_read_buffer()
  * @note The write buffer (`p_icm_write_buffer`) is used to store the data to be written
  *       to the register.
  ***********************************************/
-void icm_20649_write_reg (uint8_t reg, uint8_t data)
+int icm_20649_write_reg (uint8_t reg, uint8_t data)
 {
     uint32_t ts = osKernelGetTickCount();
     memset (p_icm_write_buffer , data, ICM_WRITE_BUFFER_SIZE_BYTES);
@@ -137,25 +158,31 @@ void icm_20649_write_reg (uint8_t reg, uint8_t data)
                                 p_icm_write_buffer,
                                 ICM_WRITE_BUFFER_SIZE_BYTES);
 
-    if (result == 0) {
-        LOG_DEBUG("icm_20649_write_reg(): Successfully wrote 0x%02X to register 0x%02X.", data, reg);
-    } else {
+    if(result == -1){
         LOG_ERROR("icm_20649_write_reg(): Failed to write 0x%02X to register 0x%02X.", data, reg);
+        return -1;
     }
 
-    osDelayUntil(ts+15); // unable to read most recent writes without a delay
+        // I cannot immediately read register after writing.
+        // The delay prevents the possibility of am outdated register reads.
+        osDelayUntil(ts+15);
+        LOG_DEBUG("icm_20649_write_reg(): Successfully wrote 0x%02X to register 0x%02X.", data, reg);
+        return 0;
+
+
 }
 
-void icm_20649_read_accel_data (uint8_t accel_data[])
+int icm_20649_read_accel_data (uint8_t accel_data[])
 {
-    uint8_t accel_xout_h = icm_20649_read_reg_and_return_val (ICM_20649_B0_ACCEL_XOUT_H);
-    uint8_t accel_xout_l = icm_20649_read_reg_and_return_val (ICM_20649_B0_ACCEL_XOUT_L);
+    uint8_t accel_xout_h = icm_20649_return_register_val(ICM_20649_B0_ACCEL_XOUT_H);
+    uint8_t accel_xout_l = icm_20649_return_register_val(ICM_20649_B0_ACCEL_XOUT_L);
 
-    uint8_t accel_yout_h = icm_20649_read_reg_and_return_val (ICM_20649_B0_ACCEL_YOUT_H);
-    uint8_t accel_yout_l = icm_20649_read_reg_and_return_val (ICM_20649_B0_ACCEL_YOUT_L);
+    uint8_t accel_yout_h = icm_20649_return_register_val(ICM_20649_B0_ACCEL_YOUT_H);
+    uint8_t accel_yout_l = icm_20649_return_register_val(ICM_20649_B0_ACCEL_YOUT_L);
 
-    uint8_t accel_zout_h = icm_20649_read_reg_and_return_val (ICM_20649_B0_ACCEL_ZOUT_H);
-    uint8_t accel_zout_l = icm_20649_read_reg_and_return_val (ICM_20649_B0_ACCEL_ZOUT_L);
+    uint8_t accel_zout_h = icm_20649_return_register_val(ICM_20649_B0_ACCEL_ZOUT_H);
+    uint8_t accel_zout_l = icm_20649_return_register_val(ICM_20649_B0_ACCEL_ZOUT_L);
+
 
     float accel_xout = (float)combine_bytes(accel_xout_h,accel_xout_l)/ACCEL_FS_8192_LSB_PER_G;
     float accel_yout = (float)combine_bytes(accel_yout_h,accel_yout_l)/ACCEL_FS_8192_LSB_PER_G;
@@ -166,4 +193,8 @@ void icm_20649_read_accel_data (uint8_t accel_data[])
     accel_data[1] = map_value(accel_yout);
     accel_data[2] = map_value(accel_zout);
 
+    if(accel_xout_l == -1 || accel_xout_h == -1 || accel_yout_l == -1 || accel_yout_h == -1 || accel_zout_l == -1 || accel_zout_h == -1){
+        LOG_DEBUG("icm_20649_read_accel_data: one or more failed register read.");
+        return -1;
+    }
 }
