@@ -2,38 +2,22 @@
 #include "drivers/ws2812b.h"
 #include "drivers/icm20649.h"
 #include "logging.h"
+#include "led_filters/LEDFilter.h"
+#include "led_filters/LEDFilter_Smooth.cpp"
 
-#define NUM_PIXELS (50)
 LOG_MODULE(main)
-uint8_t accel_data[3];
-
 
 
 int main(void) {
 
-    int result = led_strip_init(NUM_PIXELS);
-    if (result == -1) {
-        LOG_ERROR("LED init failed.");
-        return -1;
-    }
-
-    result = icm_20649_init();
-    if (result == -1) {
-        LOG_ERROR("ICM init failed.");
-        return -1;
-    }
-
+    LEDFilter_Smooth led_filter_smooth;
 
     while (1) {
-
         uint32_t ts = osKernelGetTickCount();
-        int result = icm_20649_read_accel_data(accel_data); // what to do with the error, I just want to tell the developer
-
-        for(int i = 0; i < NUM_PIXELS ; i++){
-            led_strip_set_led(i, accel_data[0],accel_data[1],accel_data[2]);
-        }
+        led_filter_smooth.update_motion_values();
+        led_filter_smooth.apply_filter();
 
         led_strip_update();
-        osDelayUntil(ts+100);
+        osDelayUntil(ts+20);
     }
 };
