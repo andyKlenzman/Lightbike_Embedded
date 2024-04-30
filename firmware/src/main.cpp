@@ -1,6 +1,6 @@
 #include <kernel.h>
 #include "drivers/ws2812b.h"
-#include "drivers/icm20689.h"
+#include "drivers/icm20649.h"
 #include "logging.h"
 
 #define NUM_PIXELS (50)
@@ -25,15 +25,15 @@ int main(void) {
 
 
     while (1) {
-        uint32_t ts = osKernelGetTickCount();
-        icm_20649_read_accel_data(accel_data);
 
+        uint32_t ts = osKernelGetTickCount();
+        int result = icm_20649_read_accel_data(accel_data); // what to do with the error, I just want to tell the developer
 
         for(int i = 0; i < NUM_PIXELS ; i++){
             led_strip_set_led(i, accel_data[0],accel_data[1],accel_data[2]);
         }
 
         led_strip_update();
-        //osDelayUntil(ts+100);
+        osDelayUntil(ts+100);
     }
 };
