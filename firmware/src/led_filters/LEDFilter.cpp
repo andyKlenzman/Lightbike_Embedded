@@ -1,29 +1,28 @@
 #include "LEDFilter.h"
 #include "logging.h"
+#include "../drivers/ws2812b.h"
 
 LOG_MODULE(LEDFilter.cpp)
 
-LEDFilter::LEDFilter() {
-    int result = led_strip_init(NUM_PIXELS);
-    if (result == -1) {
-        LOG_ERROR("LED init failed.");
-    }
 
-    result = icm_20649_init();
-    if (result == -1) {
-        LOG_ERROR("ICM init failed.");
-    }
+/*When you declare a static member variable in a class,
+ * you also need to define it outside the class, typically
+ * in a source file (.cpp) to allocate memory for it.
+ * Otherwise, you'll get an "undefined reference" error
+ * because the compiler can't find the memory allocation
+ * for that variable.*/
+
+
+
+
+LEDFilter::LEDFilter(uint8_t accel_values[3]) : accel_values(accel_values) {
+ {
 }
 
 
-int LEDFilter::update_motion_values() {
-    int result = icm_20649_read_accel_data(accel_data); // what to do with the error, I just want to tell the developer
 
-    if(result == -1){
-        LOG_DEBUG("Failed to update accelerometer values.");
-        return -1;
-    }
 
-    return 0;
-}
+
+
+
 

@@ -2,17 +2,20 @@
 #include <cstdint>
 #include "drivers/ws2812b.h"
 #include "drivers/icm20649.h"
-
+#include "defines.h"
 class LEDFilter {
-
 public:
-    LEDFilter();
+    explicit LEDFilter(uint8_t* accel_values); // Constructor with parameter
     virtual int apply_filter () = 0;
-    int update_motion_values();
+    int update_motion_values(); // how should this be doecoupled from the LEDs
+    static uint8_t virtual_leds[NUM_PIXELS][3]; // Pointer to the virtual_leds array
+
 
 protected:
-    const static int NUM_PIXELS = 50;
-    static uint8_t virtual_leds[NUM_PIXELS][3]; //static can share behavior amongst call instances
-    uint8_t accel_data[3]{};
+    static uint8_t* accel_values;
+
 };
+
+
+
 

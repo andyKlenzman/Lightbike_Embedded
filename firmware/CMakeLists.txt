@@ -41,10 +41,9 @@ add_definitions(-DARM_MATH_CM33)
 add_definitions(-D__FPU_PRESENT)
 
 # -----------------------------------------------------------------------------
-# Add Definitions
+# TCPIP
 # -----------------------------------------------------------------------------
 if (CONFIG_NO_TCPIP)
-    message("Line 99: CONFIG NO TCPIP SET TO TRUE, Line 99")
     list (APPEND CW_COMMON_LINKER_FLAGS
             -Wl,--wrap=closesocket
             -Wl,--wrap=lwip_read
@@ -54,9 +53,6 @@ if (CONFIG_NO_TCPIP)
             -Wl,--wrap=tcpip_init
     )
 endif()
-
-
-
 
 # -----------------------------------------------------------------------------
 #
@@ -109,15 +105,21 @@ set(CW_COMMON_LINKER_FLAGS
 # -----------------------------------------------------------------------------
 add_executable(Lightbike
         src/main.cpp
-        src/utils/utils.cpp
-        src/drivers/ws2812b.c
         src/sysconfig.c
-        src/drivers/icm20649.cpp
+
+        src/utils/utils.cpp
         src/utils/combine_bytes.c
         src/utils/map_value.c
         src/utils/gamma8_table.c
+
+        src/drivers/ws2812b.c
+        src/drivers/icm20649.cpp
+
         src/led_filters/LEDFilter.cpp
+        src/led_filters/LEDFilter_Basic.cpp
         src/led_filters/LEDFilter_Smooth.cpp
+        src/led_filters/LEDFilter_Fade.cpp
+        src/defines.h
 )
 
 
@@ -145,7 +147,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME}-boot  PUBLIC
 )
 
 # -----------------------------------------------------------------------------
-# Incomprehensible Random Important Stuff
+# ????
 # -----------------------------------------------------------------------------
 set(COMPILER_COMMON_FLAGS
         -mthumb
