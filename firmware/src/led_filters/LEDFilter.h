@@ -1,8 +1,8 @@
 #pragma once
 #include <cstdint>
-#include "drivers/ws2812b.h"
-#include "drivers/icm20649.h"
-#include "defines.h"
+#include "../drivers/icm20649.h"
+#include "../drivers/ws2812b.h"
+#include "../defines.h"
 
 
 class LEDFilter {

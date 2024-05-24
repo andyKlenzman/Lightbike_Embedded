@@ -4,8 +4,8 @@
 #include "logging.h"
 #include "icm20649.h"
 #include <kernel.h>
-#include "utils/combine_bytes.c"
-#include "utils/map_value.c"
+#include "../utils/combine_bytes.c"
+#include "../utils/map_value.c"
 
 #include <stdio.h>
 #include <stdint.h>

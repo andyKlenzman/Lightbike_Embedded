@@ -103,10 +103,7 @@ if (CONFIG_NO_TCPIP)
 endif()
 
 
-#[[ These are set outside of any given executable or if statement.
 
-In what instance and what order is this command executed?
-]]
 
 set(COMPILER_COMMON_FLAGS
         -mthumb
@@ -122,9 +119,21 @@ include_directories(
         )
 
 string(REPLACE ";" " " STRING_CW_COMMON_LINKER_FLAGS "${CW_COMMON_LINKER_FLAGS}")
+
+
+#[[could i use a target to write one bunch of code instead of these two ugly versions?]]
 target_link_libraries(${CMAKE_PROJECT_NAME}
         ${CMAKE_EXE_LINKER_FLAGS}
         ${CW_COMMON_LINKER_FLAGS})
+
+
+
+target_link_libraries(${CMAKE_PROJECT_NAME}-emulator
+        ${CMAKE_EXE_LINKER_FLAGS}
+        ${CW_COMMON_LINKER_FLAGS})
+
+
+
 
 string(REPLACE ";" " " STRING_COMPILER_COMMON_FLAGS "${COMPILER_COMMON_FLAGS}")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${STRING_COMPILER_COMMON_FLAGS}")
