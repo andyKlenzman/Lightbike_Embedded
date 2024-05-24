@@ -7,11 +7,29 @@
 #include "defines.h"
 
 LOG_MODULE(main)
-uint8_t accel_data[3]{};
+
+
+
+/********************************************//**
+ Here we set p_accel_data and p_virtual_leds,
+ static members of the LED filter class, with
+ the memory location of accel_data and virtual_leds.
+
+ This allows the class to access the two arrays that
+ are used throughout the firmware, without using extra
+ memory.
+ ***********************************************/
+uint8_t virtual_leds[NUM_PIXELS][3];
+uint8_t accel_data[3];
+
+uint8_t *LEDFilter::p_accel_data = accel_data;
+uint8_t (*LEDFilter::p_virtual_leds)[3] = virtual_leds;
+
+
+
 
 
 int main(void) {
-
     int result = led_strip_init(NUM_PIXELS);
     if (result == -1) {
         LOG_ERROR("LED init failed.");
@@ -34,15 +52,11 @@ int main(void) {
         }
 
 
-
-
-
-        led_filter_smooth.update_motion_values();
         led_filter_smooth.apply_filter();
 
         for (int i = 0; i < NUM_PIXELS; i++) {
-            LOG_DEBUG("Debug: Value 1 = %u, Value 2 = %u, Value 3 = %u\n", led_filter_smooth.virtual_leds[i][0], led_filter_smooth.virtual_leds[i][1], led_filter_smooth.virtual_leds[i][2]);
-            led_strip_set_led(i, led_filter_smooth.virtual_leds[i][0], led_filter_smooth.virtual_leds[i][1], led_filter_smooth.virtual_leds[i][2]);
+            //LOG_DEBUG("Debug: Value 1 = %u, Value 2 = %u, Value 3 = %u\n", virtual_leds[i][0], virtual_leds[i][1], virtual_leds[i][2]);
+            led_strip_set_led(i, virtual_leds[i][0], virtual_leds[i][1], virtual_leds[i][2]);
         }
 
         led_strip_update();

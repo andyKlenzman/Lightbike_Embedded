@@ -1,0 +1,39 @@
+/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/aarch64/ninja -DCMAKE_C_COMPILER=/Applications/ArmGNUToolchain/13.2.Rel1/arm-none-eabi/bin/arm-none-eabi-gcc -DCMAKE_CXX_COMPILER=/Applications/ArmGNUToolchain/13.2.Rel1/arm-none-eabi/bin/arm-none-eabi-g++ -DSIGN_AND_UPLOAD=TRUE -DPATH_TO_JLINK_COMMANDER_EXE=/Applications/SEGGER/JLink_V794f/JLinkExe -G Ninja -S /Users/andyklenzman/CLionProjects/LightBike/firmware -B /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-default-gnu-toolchain
+-- The C compiler identification is GNU 13.2.1
+-- The CXX compiler identification is GNU 13.2.1
+-- Checking whether C compiler has -isysroot
+-- Checking whether C compiler has -isysroot - yes
+-- Checking whether C compiler supports OSX deployment target flag
+-- Checking whether C compiler supports OSX deployment target flag - no
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - failed
+-- Check for working C compiler: /Applications/ArmGNUToolchain/13.2.Rel1/arm-none-eabi/bin/arm-none-eabi-gcc
+-- Check for working C compiler: /Applications/ArmGNUToolchain/13.2.Rel1/arm-none-eabi/bin/arm-none-eabi-gcc - broken
+CMake Error at /Applications/CLion.app/Contents/bin/cmake/mac/aarch64/share/cmake-3.27/Modules/CMakeTestCCompiler.cmake:67 (message):
+  The C compiler
+
+    "/Applications/ArmGNUToolchain/13.2.Rel1/arm-none-eabi/bin/arm-none-eabi-gcc"
+
+  is not able to compile a simple test program.
+
+  It fails with the following output:
+
+    Change Dir: '/Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-default-gnu-toolchain/CMakeFiles/CMakeScratch/TryCompile-c9JJU7'
+    
+    Run Build Command(s): /Applications/CLion.app/Contents/bin/ninja/mac/aarch64/ninja -v cmTC_d9b69
+    [1/2] /Applications/ArmGNUToolchain/13.2.Rel1/arm-none-eabi/bin/arm-none-eabi-gcc   -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.2.sdk -fdiagnostics-color=always -o CMakeFiles/cmTC_d9b69.dir/testCCompiler.c.o -c /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-default-gnu-toolchain/CMakeFiles/CMakeScratch/TryCompile-c9JJU7/testCCompiler.c
+    FAILED: CMakeFiles/cmTC_d9b69.dir/testCCompiler.c.o 
+    /Applications/ArmGNUToolchain/13.2.Rel1/arm-none-eabi/bin/arm-none-eabi-gcc   -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.2.sdk -fdiagnostics-color=always -o CMakeFiles/cmTC_d9b69.dir/testCCompiler.c.o -c /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-default-gnu-toolchain/CMakeFiles/CMakeScratch/TryCompile-c9JJU7/testCCompiler.c
+    arm-none-eabi-gcc: error: unrecognized command-line option '-arch'; did you mean '-march='?
+    ninja: build stopped: subcommand failed.
+    
+    
+
+  
+
+  CMake will not be able to correctly generate this project.
+Call Stack (most recent call first):
+  CMakeLists.txt:16 (project)
+
+
+-- Configuring incomplete, errors occurred!

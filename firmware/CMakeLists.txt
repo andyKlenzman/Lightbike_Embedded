@@ -1,4 +1,15 @@
 # -----------------------------------------------------------------------------
+# I have no idea why this broke, why not ry again tho
+# maybew need to use platform speyiell dependencies
+# -----------------------------------------------------------------------------
+
+
+
+
+
+
+
+# -----------------------------------------------------------------------------
 # Project Configuration
 # -----------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.11)
@@ -20,6 +31,7 @@ SET(APP_VERSION_STR "1.0.0")
 set(PYTHON_EXECUTABLE "/Users/andyklenzman/CLionProjects/coldwave-evk/venv/bin/python3.9")
 find_package (Python COMPONENTS Interpreter Development)
 message(STATUS "Found Python Interpreter: ${Python_EXECUTABLE}")
+
 
 # -----------------------------------------------------------------------------
 # Add Definitions
@@ -45,6 +57,7 @@ add_definitions(-D__FPU_PRESENT)
 # -----------------------------------------------------------------------------
 if (CONFIG_NO_TCPIP)
     list (APPEND CW_COMMON_LINKER_FLAGS
+
             -Wl,--wrap=closesocket
             -Wl,--wrap=lwip_read
             -Wl,--wrap=lwip_write
@@ -67,8 +80,14 @@ execute_process(
         OUTPUT_VARIABLE _commit_count
         OUTPUT_STRIP_TRAILING_WHITESPACE
 )
+
 string(STRIP ${_commit_count} CW_OS_VERSION_BUILD)
 
+
+#[[adding os but not specifying which add executable
+what is the scope of an executable in a project.
+
+]]
 set(CW_COMMON_LINKER_FLAGS
         -mfloat-abi=hard
         -mfpu=fpv5-sp-d16
@@ -97,13 +116,12 @@ set(CW_COMMON_LINKER_FLAGS
         ${CMAKE_CURRENT_LIST_DIR}/coldwaveos/lib/libbluetooth.a
         ${CMAKE_CURRENT_LIST_DIR}/coldwaveos/lib/librail_efr32xg24_gcc_release.a
 
-
 )
 
 # -----------------------------------------------------------------------------
 # Executables Configuration
 # -----------------------------------------------------------------------------
-add_executable(Lightbike
+SET(LIGHTBIKE_FILES
         src/main.cpp
         src/sysconfig.c
 
@@ -118,10 +136,66 @@ add_executable(Lightbike
         src/led_filters/LEDFilter.cpp
         src/led_filters/LEDFilter_Basic.cpp
         src/led_filters/LEDFilter_Smooth.cpp
-        src/led_filters/LEDFilter_Fade.cpp
-        src/defines.h
+        src/defines.h)
+
+add_executable(Lightbike ${LIGHTBIKE_FILES})
+
+
+
+#[[add_executable(Lightbike-emulator
+    src/main.cpp
+    src/sysconfig.c
+
+    src/utils/utils.cpp
+    src/utils/combine_bytes.c
+    src/utils/map_value.c
+    src/utils/gamma8_table.c
+
+    src/drivers/ws2812b.c
+    src/drivers/icm20649_emulator.cpp
+
+
+    src/led_filters/LEDFilter.cpp
+    src/led_filters/LEDFilter_Basic.cpp
+    src/led_filters/LEDFilter_Smooth.cpp
+    src/defines.h
+
+)]]
+
+
+#[[target_include_directories(Lightbike-emulator PRIVATE
+        ${PROJECT_SOURCE_DIR}/src/
 )
 
+target_compile_options(Lightbike-emulator PRIVATE
+        -pipe
+        -fno-strict-aliasing
+        -Wall
+        -Werror-implicit-function-declaration
+        -Wpointer-arith
+        -ffunction-sections
+        -fdata-sections
+        -Wchar-subscripts
+        -Wcomment
+        -Wmain
+        -Wparentheses
+        -Wsequence-point
+        -Wreturn-type
+        -Wswitch
+        -Wtrigraphs
+        -Wuninitialized
+        -Wunknown-pragmas
+        -Wwrite-strings
+        -Wsign-compare
+        -Wmissing-format-attribute
+        -Wno-deprecated-declarations
+        -Wunreachable-code
+        --param max-inline-insns-single=500
+        -mlong-calls
+        -Wstack-usage=1024
+        -fno-common
+        -falign-functions=4
+)]]
 
 # Bootloader
 add_executable(${CMAKE_PROJECT_NAME}-boot ${CMAKE_CURRENT_LIST_DIR}/coldwaveos/keys.c)
@@ -167,11 +241,13 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
         ${CMAKE_EXE_LINKER_FLAGS}
         ${CW_COMMON_LINKER_FLAGS})
 
+#[[target_link_libraries(${CMAKE_PROJECT_NAME}-emulator
+        ${CMAKE_EXE_LINKER_FLAGS}
+        ${CW_COMMON_LINKER_FLAGS})]]
+
 string(REPLACE ";" " " STRING_COMPILER_COMMON_FLAGS "${COMPILER_COMMON_FLAGS}")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${STRING_COMPILER_COMMON_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${STRING_COMPILER_COMMON_FLAGS}")
-
-
 
 
 
@@ -202,7 +278,7 @@ file(GLOB ZIP_SOURCES "${PROJECT_SOURCE_DIR}/src/*")
 
 add_custom_command(OUTPUT ${CMAKE_PROJECT_NAME}.zip
         COMMAND  ${CMAKE_COMMAND} -E tar "cfv" "${PROJECT_SOURCE_DIR}/dist/${CMAKE_PROJECT_NAME}-${APP_VERSION_STR}+${CW_OS_VERSION_BUILD}.src.zip" --format=zip -- ${ZIP_SOURCES}
-        COMMENT "zip'ing sources")
+        COMMENT "zipping sources")
 
 add_custom_command(OUTPUT ${CMAKE_PROJECT_NAME}-signed.bin
         COMMAND ${PYTHON_EXECUTABLE} ARGS ${CMAKE_CURRENT_LIST_DIR}/coldwaveos/imgtool.py sign --version ${APP_VERSION_STR}+${CW_OS_VERSION_BUILD} --boot-record AppFW --header-size 0x200 -S 0xf7000 --security-counter auto --align 4 -k ${PROJECT_SOURCE_DIR}/keys.pem
@@ -236,10 +312,10 @@ add_custom_target(${CMAKE_PROJECT_NAME}-dist ALL DEPENDS
 
 # -----------------------------------------------------------------------------
 # Auto signing
-#
-#
 #  We support automatic signing and upload.
 #  To use it, add "-DSIGN_AND_UPLOAD=TRUE -DPATH_TO_JLINK_COMMANDER_EXE=/path/to/JLinkExe" to your cmake commandline
+
+#this is where I could disable that annoying debug double download behavior
 # -----------------------------------------------------------------------------
 
 if (SIGN_AND_UPLOAD AND NOT PATH_TO_JLINK_COMMANDER_EXE)
@@ -253,8 +329,6 @@ else()
         h
         loadfile ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.signed.bin 0x8008000
         q")
-
-    message("")
     add_custom_command(OUTPUT upload-signed-bin
             COMMAND ${PATH_TO_JLINK_COMMANDER_EXE} ARGS -commanderscript ${CMAKE_CURRENT_LIST_DIR}/coldwaveos/upload.jLink
             COMMENT "uploading signed image, which comes from a custom command in CMAKE file and depends on the signed bin file existing."

@@ -159,7 +159,7 @@ int icm_20649_write_reg (uint8_t reg, uint8_t data)
                                 p_icm_write_buffer,
                                 WRITE_BUFFER_SIZE_BYTES);
 
-    if(result == -1){
+    if(result < 0){
         LOG_ERROR("icm_20649_write_reg(): Failed to write 0x%02X to register 0x%02X.", data, reg);
         return -1;
     }
