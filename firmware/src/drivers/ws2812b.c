@@ -11,7 +11,7 @@
 #include "driver.h"
 #include "spi.h"
 #include "kernel.h"
-#include "utils/gamma8_table.c"
+#include "../utils/gamma8_table.c"
 #include "ws2812b.h"
 #include "logging.h"
 

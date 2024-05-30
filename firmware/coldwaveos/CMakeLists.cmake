@@ -7,16 +7,11 @@ find_package (Python COMPONENTS Interpreter Development)
 message(STATUS "Found my Python interpreter: ${Python_EXECUTABLE}")
 
 
-
-
 add_definitions(-D__COLDWAVEOS__)
 add_definitions(-DAPP_VERSION_STR="${APP_VERSION_STR}")
 add_definitions(-DAPP_VERSION=${APP_VERSION})
 add_definitions(-DARM_MATH_CM33)
 add_definitions(-D__FPU_PRESENT)
-
-###### Generate the build from the commit count
-###### commit_count will contain the count of commits in the Git Repo
 
 execute_process(
         COMMAND git rev-list HEAD
@@ -59,11 +54,6 @@ set(CW_COMMON_LINKER_FLAGS
 )
 
 
-
-#[[ ***************  BOOT EXECUTABLE ***************
-
-I believe this simply compiles and links the bootloader
-]]
 add_executable(${CMAKE_PROJECT_NAME}-boot ${CMAKE_CURRENT_LIST_DIR}/keys.c)
 target_compile_options(${CMAKE_PROJECT_NAME}-boot
         PUBLIC
@@ -84,14 +74,10 @@ target_link_libraries(${CMAKE_PROJECT_NAME}-boot  PUBLIC
          -Wl,-whole-archive ${CMAKE_CURRENT_LIST_DIR}/lib/libcoldwaveos-efr32mg24b310f1536im48-bl-2.0.4+1584.a -Wl,-no-whole-archive
          -T${CMAKE_CURRENT_LIST_DIR}/boot.ld
         )
-#[[ ***************  END OF BOOT EXECUTABLE *************** ]]
 
 
-#[[ *************** IF STATEMENT FOR IF CONFIG NO TCPIP IS RUNNING *************** ]]
-
-#[[]]
 if (CONFIG_NO_TCPIP)
-    message("Line 99: CONFIG NO TCPIP SET TO TRUE, Line 99")
+    message("CONFIG NO TCPIP SET TO TRUE, Line 99")
     list (APPEND CW_COMMON_LINKER_FLAGS
      -Wl,--wrap=closesocket
      -Wl,--wrap=lwip_read
@@ -103,10 +89,7 @@ if (CONFIG_NO_TCPIP)
 endif()
 
 
-#[[ These are set outside of any given executable or if statement.
 
-In what instance and what order is this command executed?
-]]
 
 set(COMPILER_COMMON_FLAGS
         -mthumb
@@ -122,9 +105,11 @@ include_directories(
         )
 
 string(REPLACE ";" " " STRING_CW_COMMON_LINKER_FLAGS "${CW_COMMON_LINKER_FLAGS}")
+
 target_link_libraries(${CMAKE_PROJECT_NAME}
         ${CMAKE_EXE_LINKER_FLAGS}
         ${CW_COMMON_LINKER_FLAGS})
+
 
 string(REPLACE ";" " " STRING_COMPILER_COMMON_FLAGS "${COMPILER_COMMON_FLAGS}")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${STRING_COMPILER_COMMON_FLAGS}")
@@ -181,16 +166,10 @@ add_custom_command(OUTPUT ${CMAKE_PROJECT_NAME}.bin
         COMMENT "building distribution binary image"
         DEPENDS ${CMAKE_PROJECT_NAME})
 
-######
-#  We support automatic signing and upload.
-#  To use it, add "-DSIGN_AND_UPLOAD=TRUE -DPATH_TO_JLINK_COMMANDER_EXE=/path/to/JLinkExe" to your cmake commandline
-######
-
-#[[ ***************  SIGN AND UPLOAD FLAG SET TO TRUE *************** ]]
 if (SIGN_AND_UPLOAD AND NOT PATH_TO_JLINK_COMMANDER_EXE)
     message(SEND_ERROR "To use automated sign and upload, please set the Variable PATH_TO_JLINK_COMMANDER_EXE or disable SIGN_AND_UPLOAD")
 else()
-    message("Auto sign and upload marked as TRUE. CMAKE is uploading a binary file to Jsegger, so it can be flashed onto our processor")
+    message("HELLO : ${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR} ${PATH_TO_JLINK_COMMANDER_EXE}")
     file (WRITE ${CMAKE_CURRENT_LIST_DIR}/upload.jLink "device EFR32MG24BXXXF1536
         si 1
         speed auto
@@ -198,8 +177,6 @@ else()
         h
         loadfile ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.signed.bin 0x8008000
         q")
-
-    message("")
     add_custom_command(OUTPUT upload-signed-bin
             COMMAND ${PATH_TO_JLINK_COMMANDER_EXE} ARGS -commanderscript ${CMAKE_CURRENT_LIST_DIR}/upload.jLink
             COMMENT "uploading signed image, which comes from a custom command in CMAKE file and depends on the signed bin file existing."
@@ -208,9 +185,9 @@ else()
     add_custom_target(${CMAKE_PROJECT_NAME}-signed ALL DEPENDS
             upload-signed-bin
             )
+
 endif()
 
-message("CMAKE SYNTAX LESSON: ALL means it is built by default, DEPENDS means it depends on the following things to be built first")
 add_custom_target(${CMAKE_PROJECT_NAME}-dist ALL DEPENDS
        ${CMAKE_PROJECT_NAME}.hex
        ${CMAKE_PROJECT_NAME}-signed-dist.bin

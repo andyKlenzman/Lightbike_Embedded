@@ -1,19 +1,20 @@
 #include "driver.h"
 #include "i2c.h"
-#include "icm20649_register_defs.h"
+#include "icm20649_defs.h"
 #include "logging.h"
-#include "icm20689.h"
+#include "icm20649.h"
 #include <kernel.h>
 #include "utils/combine_bytes.c"
 #include "utils/map_value.c"
 
-#define ICM_READ_BUFFER_SIZE_BYTES  (1)
-#define ICM_WRITE_BUFFER_SIZE_BYTES  (1)
 
 LOG_MODULE(ICM_20649)
 
+#define READ_BUFFER_SIZE_BYTES  (1)
+#define WRITE_BUFFER_SIZE_BYTES  (1)
+
 static int i2c_device;
-uint8_t *p_icm_read_buffer;
+uint8_t *p_read_buffer;
 uint8_t *p_icm_write_buffer;
 
 /********************************************//**
@@ -31,16 +32,16 @@ uint8_t *p_icm_write_buffer;
  ***********************************************/
 int icm_20649_init ()
 {
-    p_icm_read_buffer = (uint8_t *) malloc (ICM_READ_BUFFER_SIZE_BYTES);
-    p_icm_write_buffer = (uint8_t *) malloc (ICM_WRITE_BUFFER_SIZE_BYTES);
+    p_read_buffer = (uint8_t *) malloc (READ_BUFFER_SIZE_BYTES);
+    p_icm_write_buffer = (uint8_t *) malloc (WRITE_BUFFER_SIZE_BYTES);
 
-    if (p_icm_read_buffer == NULL || p_icm_write_buffer == NULL) {
+    if (p_read_buffer == NULL || p_icm_write_buffer == NULL) {
         LOG_ERROR("Failed to allocate memory for read and write buffer.");
         return -1;
     }
 
-    memset (p_icm_read_buffer , 0, ICM_READ_BUFFER_SIZE_BYTES);
-    memset (p_icm_write_buffer , 0, ICM_WRITE_BUFFER_SIZE_BYTES);
+    memset (p_read_buffer , 0, READ_BUFFER_SIZE_BYTES);
+    memset (p_icm_write_buffer , 0, WRITE_BUFFER_SIZE_BYTES);
 
     i2c_device = open ("i2c1");
     if (i2c_device == -1) {
@@ -105,12 +106,12 @@ int icm_20649_init_accel ()
  ***********************************************/
 
 
-uint8_t  -1 icm_20649_return_register_val (uint8_t reg) {
+uint8_t icm_20649_return_register_val (uint8_t reg) {
     int result = i2c_read_reg(i2c_device,
                                  ICM_20649_DEVICE_ADDRESS,
                                  reg,
-                                 p_icm_read_buffer,
-                                 ICM_READ_BUFFER_SIZE_BYTES);
+                                 p_read_buffer,
+                                 READ_BUFFER_SIZE_BYTES);
 
 
     if(result == -1){
@@ -118,7 +119,7 @@ uint8_t  -1 icm_20649_return_register_val (uint8_t reg) {
         return -1;
     }
 
-    return *p_icm_read_buffer;
+    return *p_read_buffer;
 }
 
 
@@ -131,7 +132,7 @@ uint8_t  -1 icm_20649_return_register_val (uint8_t reg) {
  ***********************************************/
 uint8_t icm_20649_get_read_buffer()
 {
-        return *p_icm_read_buffer;
+        return *p_read_buffer;
 };
 
 
@@ -150,15 +151,15 @@ uint8_t icm_20649_get_read_buffer()
 int icm_20649_write_reg (uint8_t reg, uint8_t data)
 {
     uint32_t ts = osKernelGetTickCount();
-    memset (p_icm_write_buffer , data, ICM_WRITE_BUFFER_SIZE_BYTES);
+    memset (p_icm_write_buffer , data, WRITE_BUFFER_SIZE_BYTES);
 
     int result = i2c_write_reg (i2c_device,
                                 ICM_20649_DEVICE_ADDRESS,
                                 reg,
                                 p_icm_write_buffer,
-                                ICM_WRITE_BUFFER_SIZE_BYTES);
+                                WRITE_BUFFER_SIZE_BYTES);
 
-    if(result == -1){
+    if(result < 0){
         LOG_ERROR("icm_20649_write_reg(): Failed to write 0x%02X to register 0x%02X.", data, reg);
         return -1;
     }
@@ -197,4 +198,6 @@ int icm_20649_read_accel_data (uint8_t accel_data[])
         LOG_DEBUG("icm_20649_read_accel_data: one or more failed register read.");
         return -1;
     }
+
+    return 0;
 }
