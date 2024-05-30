@@ -1,7 +1,0 @@
-/Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-default-gnu-toolchain/CMakeFiles/Lightbike.dir
-/Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-default-gnu-toolchain/CMakeFiles/Lightbike-emulator.dir
-/Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-default-gnu-toolchain/CMakeFiles/Lightbike-boot.dir
-/Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-default-gnu-toolchain/CMakeFiles/Lightbike-signed.dir
-/Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-default-gnu-toolchain/CMakeFiles/Lightbike-dist.dir
-/Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-default-gnu-toolchain/CMakeFiles/edit_cache.dir
-/Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-default-gnu-toolchain/CMakeFiles/rebuild_cache.dir

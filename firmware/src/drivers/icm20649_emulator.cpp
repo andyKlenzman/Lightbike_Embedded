@@ -17,8 +17,7 @@ LOG_MODULE(ICM_20649_Emulator)
 #define ARRAY_SIZE (3)
 #define MAX_VALUE (30)
 
-
-uint8_t* p_read_buffer;
+uint8_t * p_read_buffer;
 
 
 uint8_t *generate_random_numbers() {
@@ -29,8 +28,9 @@ uint8_t *generate_random_numbers() {
 
     // Generate random numbers between 0 and 30
     for (int i = 0; i < ARRAY_SIZE; i++) {
-        numbers[i] = rand() % (MAX_VALUE + 1);
+        numbers[i] = (uint8_t)rand() % (MAX_VALUE + 1);
     }
+
 
     return numbers;
 }
