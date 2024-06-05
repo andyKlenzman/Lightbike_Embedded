@@ -1,0 +1,87 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.11"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Lightbike",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Lightbike::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Lightbike-Debug-ec2872f5ffd937791a50.json",
+					"name" : "Lightbike",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Lightbike-boot::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Lightbike-boot-Debug-c68aa16a84dbf519516b.json",
+					"name" : "Lightbike-boot",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Lightbike-dist::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Lightbike-dist-Debug-da1bf21ee95cf5fb6e2e.json",
+					"name" : "Lightbike-dist",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Lightbike-signed::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Lightbike-signed-Debug-603600bc41fe302e1868.json",
+					"name" : "Lightbike-signed",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain",
+		"source" : "/Users/andyklenzman/CLionProjects/LightBike/firmware"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}
