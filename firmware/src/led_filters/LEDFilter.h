@@ -8,10 +8,7 @@
 class LEDFilter {
 public:
     LEDFilter();
-    virtual int apply_filter () = 0;
-
-
-
+    virtual void apply_filter () = 0;
 
 protected:
     static uint8_t *p_accel_data;

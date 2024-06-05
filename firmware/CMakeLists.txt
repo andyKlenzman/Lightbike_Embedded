@@ -24,21 +24,28 @@ if (USE_EMULATOR MATCHES OFF)
     message("USE EMULATOR MATCHES OFF: " ${USE_EMULATOR})
 
     SET(LIGHTBIKE_FILES
-        src/main.cpp
-        src/sysconfig.c
+            src/main.cpp
+            src/sysconfig.c
 
-        src/utils/utils.cpp
-        src/utils/combine_bytes.c
-        src/utils/map_value.c
-        src/utils/gamma8_table.c
+            src/utils/utils.cpp
+            src/utils/combine_bytes.c
+            src/utils/map_value.c
+            src/utils/gamma8_table.c
 
-        src/drivers/ws2812b.c
-        src/drivers/icm20649.cpp
+            src/drivers/ws2812b.c
+            src/drivers/icm20649.cpp
 
-        src/led_filters/LEDFilter.cpp
-        src/led_filters/LEDFilter_Basic.cpp
-        src/led_filters/LEDFilter_Smooth.cpp
-        src/defines.h
+            src/led_filters/LEDFilter.cpp
+            src/led_filters/LEDFilter_Basic.cpp
+            src/led_filters/LEDFilter_Smooth.cpp
+            src/defines.h
+            src/drivers/button.cpp
+            src/drivers/button.h
+            src/button_ui/button_interrupt.cpp
+            src/globals.h
+            src/state_handlers/state_handler.h
+            src/state_handlers/filter_states.h
+            src/button_ui/button_interrupt.h
     )
 endif ()
 
@@ -59,10 +66,19 @@ if (USE_EMULATOR MATCHES ON)
             src/drivers/icm20649_emulator.cpp
 
             src/led_filters/LEDFilter.cpp
-            src/led_filters/LEDFilter.h
             src/led_filters/LEDFilter_Basic.cpp
             src/led_filters/LEDFilter_Smooth.cpp
             src/defines.h
+            src/drivers/button.cpp
+            src/drivers/button.h
+
+
+            src/button_ui/button_interrupt.cpp
+            src/globals.h
+            src/state_handlers/state_handler.h
+            src/state_handlers/filter_states.h
+            src/button_ui/button_interrupt.h
+            src/state_handlers/state_handler.cpp
     )
 endif ()
 

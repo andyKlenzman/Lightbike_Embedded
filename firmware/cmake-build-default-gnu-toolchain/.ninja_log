@@ -1,8 +1,0 @@
-# ninja log v5
-1	38	1716552549856530743	CMakeFiles/Lightbike.dir/src/utils/combine_bytes.c.obj	bd1a9ffd88254791
-0	62	1716552549880457576	CMakeFiles/Lightbike.dir/src/drivers/ws2812b.c.obj	f1cf108eb5ca838b
-29	58	1716552549876840589	CMakeFiles/Lightbike.dir/src/utils/map_value.c.obj	ef4e208ce5ba14b7
-38	61	1716552549879748329	CMakeFiles/Lightbike.dir/src/utils/gamma8_table.c.obj	56b02451ae2f724b
-1	28	1716552549847115609	CMakeFiles/Lightbike.dir/src/sysconfig.c.obj	ccd48795c06a9d9b
-0	47	1716552549865389921	CMakeFiles/Lightbike.dir/src/main.cpp.obj	3f09116bb116917b
-0	226	1716552550044855254	CMakeFiles/Lightbike.dir/src/utils/utils.cpp.obj	417d6545677e915c

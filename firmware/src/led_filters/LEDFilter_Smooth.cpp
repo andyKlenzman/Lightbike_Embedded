@@ -1,7 +1,5 @@
 #include "LEDFilter.h"
 
-
-
 class LEDFilter_Smooth : public LEDFilter {
 public:
     LEDFilter_Smooth() {
@@ -10,7 +8,7 @@ public:
         }
     }
 
-    int apply_filter() override {
+    void apply_filter() override {
         // Smoothly update smooth_values based on accelerometer data
         for (int i = 0; i < 3; i++) {
             // Smoothly adjust smooth_values towards accel_data
@@ -23,7 +21,6 @@ public:
             p_virtual_leds[i][1] = smooth_values[1];
             p_virtual_leds[i][2] = smooth_values[2];
         }
-        return 0;
     }
 
 private:
