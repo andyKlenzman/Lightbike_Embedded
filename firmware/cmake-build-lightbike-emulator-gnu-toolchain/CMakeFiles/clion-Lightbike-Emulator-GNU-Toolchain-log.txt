@@ -2,6 +2,6 @@
 USE EMULATOR MATCHES ON: ON
 -- Found my Python interpreter: /opt/homebrew/Frameworks/Python.framework/Versions/3.11/bin/python3.11
 HELLO : /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain Lightbike /Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos /Applications/SEGGER/JLink_V794f/JLinkExe
--- Configuring done (0.2s)
+-- Configuring done (0.1s)
 -- Generating done (0.0s)
 -- Build files have been written to: /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain

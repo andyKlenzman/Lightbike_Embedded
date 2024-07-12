@@ -39,13 +39,11 @@ if (USE_EMULATOR MATCHES OFF)
             src/led_filters/LEDFilter_Basic.cpp
             src/led_filters/LEDFilter_Smooth.cpp
             src/defines.h
-            src/drivers/button.cpp
-            src/drivers/button.h
-            src/button_ui/button_interrupt.cpp
+            src/buttons/buttons.cpp
             src/globals.h
             src/state_handlers/state_handler.h
             src/state_handlers/filter_states.h
-            src/button_ui/button_interrupt.h
+            src/buttons/buttons.h
     )
 endif ()
 
@@ -69,15 +67,13 @@ if (USE_EMULATOR MATCHES ON)
             src/led_filters/LEDFilter_Basic.cpp
             src/led_filters/LEDFilter_Smooth.cpp
             src/defines.h
-            src/drivers/button.cpp
-            src/drivers/button.h
 
 
-            src/button_ui/button_interrupt.cpp
+            src/buttons/buttons.cpp
             src/globals.h
             src/state_handlers/state_handler.h
             src/state_handlers/filter_states.h
-            src/button_ui/button_interrupt.h
+            src/buttons/buttons.h
             src/state_handlers/state_handler.cpp
     )
 endif ()
