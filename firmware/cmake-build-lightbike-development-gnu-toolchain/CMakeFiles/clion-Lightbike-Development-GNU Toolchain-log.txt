@@ -1,7 +1,0 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/aarch64/ninja -DCMAKE_C_COMPILER=/Applications/ArmGNUToolchain/13.2.Rel1/arm-none-eabi/bin/arm-none-eabi-gcc -DCMAKE_CXX_COMPILER=/Applications/ArmGNUToolchain/13.2.Rel1/arm-none-eabi/bin/arm-none-eabi-g++ -DSIGN_AND_UPLOAD=TRUE -DUSE_EMULATOR=OFF -DPATH_TO_JLINK_COMMANDER_EXE=/Applications/SEGGER/JLink_V794f/JLinkExe -G Ninja -S /Users/andyklenzman/CLionProjects/LightBike/firmware -B /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-development-gnu-toolchain
-USE EMULATOR MATCHES OFF: OFF
--- Found my Python interpreter: /opt/homebrew/Frameworks/Python.framework/Versions/3.11/bin/python3.11
-HELLO : /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-development-gnu-toolchain Lightbike /Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos /Applications/SEGGER/JLink_V794f/JLinkExe
--- Configuring done (0.2s)
--- Generating done (0.0s)
--- Build files have been written to: /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-development-gnu-toolchain
