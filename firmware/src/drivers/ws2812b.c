@@ -109,10 +109,6 @@ int led_strip_init(int num_pixels) {
     spi_dev = open("spi0");
 
     if (spi_dev == -1 || g_led_strip_data_buf == NULL) {
-
-
-
-
         return -1;
     }
 

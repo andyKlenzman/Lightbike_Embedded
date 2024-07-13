@@ -126,8 +126,7 @@ cw_driver_return_t gpio_get (uint16_t pin);
 
 cw_driver_return_t gpio_set (uint16_t pin, gpio_pin_state_t state);
 
-cw_driver_return_t gpio_set_dir (uint16_t gpio, gpio_pin_dir_t dir); // so this declaration returns a simple it, but it has no declaration?? What is going on here.
-
+cw_driver_return_t gpio_set_dir (uint16_t gpio, gpio_pin_dir_t dir);
 
 cw_driver_return_t gpio_set_mode (uint16_t gpio, gpio_pin_mode_t mode);
 

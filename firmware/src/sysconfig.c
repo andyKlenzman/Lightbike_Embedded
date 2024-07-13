@@ -1,12 +1,11 @@
 #include <sysconfig.h>
+#include "defines.h"
 
 sysconf_use_driver(spi_gecko)
 sysconf_use_driver(i2c_gecko)
 
 /********************************************//**
  *  pin mappings coming from page 12 of the SiLabs EVK user guide
- *
- *
  ***********************************************/
 sysconf_create_device("silabs-gecko-spi", spi0, 0x5005C000UL,
                       sysconf_set_int_param (gpio_mosi, 201),
