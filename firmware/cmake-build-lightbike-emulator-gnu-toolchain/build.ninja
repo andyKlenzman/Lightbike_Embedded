@@ -145,13 +145,13 @@ build CMakeFiles/Lightbike.dir/src/buttons/buttons.cpp.obj: CXX_COMPILER__Lightb
   OBJECT_DIR = CMakeFiles/Lightbike.dir
   OBJECT_FILE_DIR = CMakeFiles/Lightbike.dir/src/buttons
 
-build CMakeFiles/Lightbike.dir/src/state_handlers/state_handler.cpp.obj: CXX_COMPILER__Lightbike_unscanned_Debug /Users/andyklenzman/CLionProjects/LightBike/firmware/src/state_handlers/state_handler.cpp || cmake_object_order_depends_target_Lightbike
+build CMakeFiles/Lightbike.dir/src/state_handler/state_handler.cpp.obj: CXX_COMPILER__Lightbike_unscanned_Debug /Users/andyklenzman/CLionProjects/LightBike/firmware/src/state_handler/state_handler.cpp || cmake_object_order_depends_target_Lightbike
   DEFINES = -DAPP_VERSION=1 -DAPP_VERSION_STR=\"1.0.0\" -DARM_MATH_CM33 -DDEBUG -D__COLDWAVEOS__ -D__FPU_PRESENT
-  DEP_FILE = CMakeFiles/Lightbike.dir/src/state_handlers/state_handler.cpp.obj.d
+  DEP_FILE = CMakeFiles/Lightbike.dir/src/state_handler/state_handler.cpp.obj.d
   FLAGS = -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mcpu=cortex-m33 -g -fdiagnostics-color=always -pipe -fno-strict-aliasing -Wall -Werror-implicit-function-declaration -Wpointer-arith -ffunction-sections -fdata-sections -Wchar-subscripts -Wcomment -Wmain -Wparentheses -Wsequence-point -Wreturn-type -Wswitch -Wtrigraphs -Wuninitialized -Wunknown-pragmas -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wno-deprecated-declarations -Wunreachable-code --param max-inline-insns-single=500 -mlong-calls -Wstack-usage=1024 -fno-common -falign-functions=4
   INCLUDES = -I/Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos/include -I/Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos/include/platform -I/Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos/include/crypto -I/Users/andyklenzman/CLionProjects/LightBike/firmware/src
   OBJECT_DIR = CMakeFiles/Lightbike.dir
-  OBJECT_FILE_DIR = CMakeFiles/Lightbike.dir/src/state_handlers
+  OBJECT_FILE_DIR = CMakeFiles/Lightbike.dir/src/state_handler
 
 
 # =============================================================================
@@ -161,7 +161,7 @@ build CMakeFiles/Lightbike.dir/src/state_handlers/state_handler.cpp.obj: CXX_COM
 #############################################
 # Link the executable Lightbike
 
-build Lightbike: CXX_EXECUTABLE_LINKER__Lightbike_Debug CMakeFiles/Lightbike.dir/src/main.cpp.obj CMakeFiles/Lightbike.dir/src/sysconfig.c.obj CMakeFiles/Lightbike.dir/src/utils/utils.cpp.obj CMakeFiles/Lightbike.dir/src/utils/combine_bytes.c.obj CMakeFiles/Lightbike.dir/src/utils/map_value.c.obj CMakeFiles/Lightbike.dir/src/utils/gamma8_table.c.obj CMakeFiles/Lightbike.dir/src/drivers/ws2812b.c.obj CMakeFiles/Lightbike.dir/src/drivers/icm20649_emulator.cpp.obj CMakeFiles/Lightbike.dir/src/led_filters/LEDFilter.cpp.obj CMakeFiles/Lightbike.dir/src/led_filters/LEDFilter_Basic.cpp.obj CMakeFiles/Lightbike.dir/src/led_filters/LEDFilter_Smooth.cpp.obj CMakeFiles/Lightbike.dir/src/buttons/buttons.cpp.obj CMakeFiles/Lightbike.dir/src/state_handlers/state_handler.cpp.obj | /Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos/lib/libcoldwaveos-efr32mg24b310f1536im48-2.0.4+1584.a /Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos/lib/libarm_ARMv8MMLldfsp_math.a /Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos/lib/libbluetooth.a /Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos/lib/librail_efr32xg24_gcc_release.a
+build Lightbike: CXX_EXECUTABLE_LINKER__Lightbike_Debug CMakeFiles/Lightbike.dir/src/main.cpp.obj CMakeFiles/Lightbike.dir/src/sysconfig.c.obj CMakeFiles/Lightbike.dir/src/utils/utils.cpp.obj CMakeFiles/Lightbike.dir/src/utils/combine_bytes.c.obj CMakeFiles/Lightbike.dir/src/utils/map_value.c.obj CMakeFiles/Lightbike.dir/src/utils/gamma8_table.c.obj CMakeFiles/Lightbike.dir/src/drivers/ws2812b.c.obj CMakeFiles/Lightbike.dir/src/drivers/icm20649_emulator.cpp.obj CMakeFiles/Lightbike.dir/src/led_filters/LEDFilter.cpp.obj CMakeFiles/Lightbike.dir/src/led_filters/LEDFilter_Basic.cpp.obj CMakeFiles/Lightbike.dir/src/led_filters/LEDFilter_Smooth.cpp.obj CMakeFiles/Lightbike.dir/src/buttons/buttons.cpp.obj CMakeFiles/Lightbike.dir/src/state_handler/state_handler.cpp.obj | /Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos/lib/libcoldwaveos-efr32mg24b310f1536im48-2.0.4+1584.a /Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos/lib/libarm_ARMv8MMLldfsp_math.a /Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos/lib/libbluetooth.a /Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos/lib/librail_efr32xg24_gcc_release.a
   FLAGS = -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mcpu=cortex-m33 -g
   LINK_LIBRARIES = -mfloat-abi=hard  -mfpu=fpv5-sp-d16  -mcpu=cortex-m33  -Wl,--gc-sections  -Wl,--entry=_os_init  -mlong-calls  -mthumb  -Wl,--print-memory-usage  -specs=nano.specs  -Wl,-wrap=malloc  -Wl,-wrap=free  -Wl,-wrap=calloc  -Wl,-wrap=realloc  -Wl,-wrap=_malloc_r  -Wl,-wrap=_free_r  -Wl,-wrap=_calloc_r  -Wl,-wrap=_realloc_r  -Wl,-wrap=__aeabi_unwind_cpp_pr0  -Wl,-wrap=__aeabi_unwind_cpp_pr1  -Wl,-wrap=__aeabi_unwind_cpp_pr2  -Wl,--no-warn-rwx-segment  -T/Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos/linker.ld  -Wl,-whole-archive  /Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos/lib/libcoldwaveos-efr32mg24b310f1536im48-2.0.4+1584.a  -Wl,-no-whole-archive  -Wl,-whole-archive  /Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos/lib/libarm_ARMv8MMLldfsp_math.a  -Wl,-no-whole-archive  /Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos/lib/libbluetooth.a  /Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos/lib/librail_efr32xg24_gcc_release.a
   OBJECT_DIR = CMakeFiles/Lightbike.dir
@@ -259,7 +259,7 @@ build upload-signed-bin | ${cmake_ninja_workdir}upload-signed-bin: CUSTOM_COMMAN
 # Custom command for Lightbike-signed.bin
 
 build Lightbike-signed.bin | ${cmake_ninja_workdir}Lightbike-signed.bin: CUSTOM_COMMAND Lightbike.bin || Lightbike
-  COMMAND = cd /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain && /Users/andyklenzman/CLionProjects/coldwave-evk/venv/bin/python3.9 /Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos/imgtool.py sign --version 1.0.0+18 --boot-record AppFW --header-size 0x200 -S 0xf7000 --security-counter auto --align 4 -k /Users/andyklenzman/CLionProjects/LightBike/firmware/keys.pem /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain/Lightbike.bin /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain/Lightbike.signed.bin
+  COMMAND = cd /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain && /Users/andyklenzman/CLionProjects/coldwave-evk/venv/bin/python3.9 /Users/andyklenzman/CLionProjects/LightBike/firmware/coldwaveos/imgtool.py sign --version 1.0.0+19 --boot-record AppFW --header-size 0x200 -S 0xf7000 --security-counter auto --align 4 -k /Users/andyklenzman/CLionProjects/LightBike/firmware/keys.pem /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain/Lightbike.bin /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain/Lightbike.signed.bin
   DESC = copying signed binary to dist folder, which means CWIK-Signed bin. It runs the python script and directory to the key. Makes sure .bin file is built before running this.
   restat = 1
 
@@ -283,7 +283,7 @@ build CMakeFiles/Lightbike-dist | ${cmake_ninja_workdir}CMakeFiles/Lightbike-dis
 # Custom command for Lightbike-bl.hex
 
 build Lightbike-bl.hex | ${cmake_ninja_workdir}Lightbike-bl.hex: CUSTOM_COMMAND || Lightbike Lightbike-boot
-  COMMAND = cd /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain && /Applications/ArmGNUToolchain/13.2.Rel1/arm-none-eabi/bin/arm-none-eabi-objcopy -O ihex Lightbike-boot /Users/andyklenzman/CLionProjects/LightBike/firmware/dist/Lightbike-1.0.0+18-boot.hex
+  COMMAND = cd /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain && /Applications/ArmGNUToolchain/13.2.Rel1/arm-none-eabi/bin/arm-none-eabi-objcopy -O ihex Lightbike-boot /Users/andyklenzman/CLionProjects/LightBike/firmware/dist/Lightbike-1.0.0+19-boot.hex
   DESC = building distribution bootloader hex image
   restat = 1
 
@@ -292,7 +292,7 @@ build Lightbike-bl.hex | ${cmake_ninja_workdir}Lightbike-bl.hex: CUSTOM_COMMAND 
 # Custom command for Lightbike-signed-dist.bin
 
 build Lightbike-signed-dist.bin | ${cmake_ninja_workdir}Lightbike-signed-dist.bin: CUSTOM_COMMAND Lightbike-signed.bin || Lightbike Lightbike-boot
-  COMMAND = cd /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain && /Applications/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -E copy /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain/Lightbike.signed.bin /Users/andyklenzman/CLionProjects/LightBike/firmware/dist/Lightbike-1.0.0+18.signed.bin
+  COMMAND = cd /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain && /Applications/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -E copy /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain/Lightbike.signed.bin /Users/andyklenzman/CLionProjects/LightBike/firmware/dist/Lightbike-1.0.0+19.signed.bin
   DESC = signing image
   restat = 1
 
@@ -301,7 +301,7 @@ build Lightbike-signed-dist.bin | ${cmake_ninja_workdir}Lightbike-signed-dist.bi
 # Custom command for Lightbike.dsym
 
 build Lightbike.dsym | ${cmake_ninja_workdir}Lightbike.dsym: CUSTOM_COMMAND || Lightbike Lightbike-boot
-  COMMAND = cd /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain && /Applications/ArmGNUToolchain/13.2.Rel1/arm-none-eabi/bin/arm-none-eabi-objcopy --only-keep-debug Lightbike /Users/andyklenzman/CLionProjects/LightBike/firmware/dist/Lightbike-1.0.0+18.dsym
+  COMMAND = cd /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain && /Applications/ArmGNUToolchain/13.2.Rel1/arm-none-eabi/bin/arm-none-eabi-objcopy --only-keep-debug Lightbike /Users/andyklenzman/CLionProjects/LightBike/firmware/dist/Lightbike-1.0.0+19.dsym
   DESC = building debug info
   restat = 1
 
@@ -310,7 +310,7 @@ build Lightbike.dsym | ${cmake_ninja_workdir}Lightbike.dsym: CUSTOM_COMMAND || L
 # Custom command for Lightbike.hex
 
 build Lightbike.hex | ${cmake_ninja_workdir}Lightbike.hex: CUSTOM_COMMAND Lightbike-signed.bin || Lightbike Lightbike-boot
-  COMMAND = cd /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain && /Applications/ArmGNUToolchain/13.2.Rel1/arm-none-eabi/bin/arm-none-eabi-objcopy -I binary --change-addresses 0x8000 -O ihex /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain/Lightbike.signed.bin /Users/andyklenzman/CLionProjects/LightBike/firmware/dist/Lightbike-1.0.0+18.hex
+  COMMAND = cd /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain && /Applications/ArmGNUToolchain/13.2.Rel1/arm-none-eabi/bin/arm-none-eabi-objcopy -I binary --change-addresses 0x8000 -O ihex /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain/Lightbike.signed.bin /Users/andyklenzman/CLionProjects/LightBike/firmware/dist/Lightbike-1.0.0+19.hex
   DESC = building signed distribution hex image
   restat = 1
 
@@ -319,7 +319,7 @@ build Lightbike.hex | ${cmake_ninja_workdir}Lightbike.hex: CUSTOM_COMMAND Lightb
 # Custom command for Lightbike.zip
 
 build Lightbike.zip | ${cmake_ninja_workdir}Lightbike.zip: CUSTOM_COMMAND || Lightbike Lightbike-boot
-  COMMAND = cd /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain && /Applications/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -E tar cfv /Users/andyklenzman/CLionProjects/LightBike/firmware/dist/Lightbike-1.0.0+18.src.zip --format=zip -- /Users/andyklenzman/CLionProjects/LightBike/firmware/src/buttons /Users/andyklenzman/CLionProjects/LightBike/firmware/src/defines.h /Users/andyklenzman/CLionProjects/LightBike/firmware/src/drivers /Users/andyklenzman/CLionProjects/LightBike/firmware/src/globals.h /Users/andyklenzman/CLionProjects/LightBike/firmware/src/led_filters /Users/andyklenzman/CLionProjects/LightBike/firmware/src/main.cpp /Users/andyklenzman/CLionProjects/LightBike/firmware/src/state_handlers /Users/andyklenzman/CLionProjects/LightBike/firmware/src/sysconfig.c /Users/andyklenzman/CLionProjects/LightBike/firmware/src/utils
+  COMMAND = cd /Users/andyklenzman/CLionProjects/LightBike/firmware/cmake-build-lightbike-emulator-gnu-toolchain && /Applications/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -E tar cfv /Users/andyklenzman/CLionProjects/LightBike/firmware/dist/Lightbike-1.0.0+19.src.zip --format=zip -- /Users/andyklenzman/CLionProjects/LightBike/firmware/src/buttons /Users/andyklenzman/CLionProjects/LightBike/firmware/src/defines.h /Users/andyklenzman/CLionProjects/LightBike/firmware/src/drivers /Users/andyklenzman/CLionProjects/LightBike/firmware/src/globals.h /Users/andyklenzman/CLionProjects/LightBike/firmware/src/led_filters /Users/andyklenzman/CLionProjects/LightBike/firmware/src/main.cpp /Users/andyklenzman/CLionProjects/LightBike/firmware/src/state_handler /Users/andyklenzman/CLionProjects/LightBike/firmware/src/sysconfig.c /Users/andyklenzman/CLionProjects/LightBike/firmware/src/utils
   DESC = zip'ing sources
   restat = 1
 

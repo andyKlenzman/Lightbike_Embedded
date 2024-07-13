@@ -41,8 +41,7 @@ if (USE_EMULATOR MATCHES OFF)
             src/defines.h
             src/buttons/buttons.cpp
             src/globals.h
-            src/state_handlers/state_handler.h
-            src/state_handlers/filter_states.h
+            src/state_handler/state_handler.cpp
             src/buttons/buttons.h
     )
 endif ()
@@ -71,10 +70,8 @@ if (USE_EMULATOR MATCHES ON)
 
             src/buttons/buttons.cpp
             src/globals.h
-            src/state_handlers/state_handler.h
-            src/state_handlers/filter_states.h
             src/buttons/buttons.h
-            src/state_handlers/state_handler.cpp
+            src/state_handler/state_handler.cpp
     )
 endif ()
 

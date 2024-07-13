@@ -1,3 +1,20 @@
+/*=============================================================================
+ |       Project:  Lightbike
+ |       Author:  Andy Klenzman ak@imagineon.de
+ |
+ |
+ |  Description:  Lightbike is a...
+ |
+ |     Language:  [Programming language and version used.]
+ | Ex. Packages:  [List names and sources of all external packages
+ |                required by this program.]
+ |
+ | Deficiencies:  [If you know of any problems with the code, provide
+ |                details here, otherwise clearly state that you know
+ |                of no unsatisfied requirements and no logic errors.]
+ *===========================================================================*/
+
+
 #include <kernel.h>
 #include "logging.h"
 
@@ -7,7 +24,7 @@
 #include "defines.h"
 #include "globals.h"
 
-#include "state_handlers/state_handler.h"
+#include "state_handler/state_handler.h"
 #include "buttons/buttons.h"
 
 LOG_MODULE(main)
