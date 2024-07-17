@@ -3,11 +3,45 @@
  |       Author:  Andy Klenzman ak@imagineon.de
  |
  |
- |  Description:  Lightbike is a...
  |
- |     Language:  [Programming language and version used.]
- | Ex. Packages:  [List names and sources of all external packages
- |                required by this program.]
+
+ Description:
+ Lightbike transforms accelerometer and gyroscope
+ data from an ICM20649 into patterns onto WS2812B LEDs.
+ It is attached to a bike axel inside a case and the LEDs are
+ wrapped around the wheel to make patterns.
+
+ It is configured for the EFR32MG24 processor.
+
+Here are the parts of the program I should describe:
+
+ LEDFilters
+
+
+
+ Overall Application Flow
+
+ Main Folders
+ ColdwaveOS -
+ ColdwaveOS is a distribution of COldwave by ImagineOn. It is set up particularly
+ for my microcontroller architecture.
+
+ dist
+
+
+
+
+
+
+
+
+
+ Naming Conventions:
+
+
+
+
+ |
  |
  | Deficiencies:  [If you know of any problems with the code, provide
  |                details here, otherwise clearly state that you know
@@ -16,6 +50,7 @@
 
 
 #include <kernel.h>
+#include <cstdio>
 #include "logging.h"
 
 #include "drivers/ws2812b.h"
@@ -36,6 +71,7 @@ uint8_t *LEDFilter::p_accel_data = accel_data;
 uint8_t (*LEDFilter::p_virtual_leds)[3] = virtual_leds;
 
 int main(void) {
+    LOG_DEBUG("PROGRAM STARTED");
     int result;
     result = led_strip_init(NUM_PIXELS);
     if (result == -1) {
@@ -72,6 +108,6 @@ int main(void) {
         }
 
         led_strip_update();
-        osDelayUntil(ts+20);
+        osDelayUntil(ts+30);
     }
 };

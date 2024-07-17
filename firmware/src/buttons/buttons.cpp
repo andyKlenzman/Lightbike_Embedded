@@ -1,6 +1,8 @@
 #include "buttons.h"
 #include "state_handler/state_handler.h"
 #include "logging.h"
+#include "gpio.h"
+
 
 LOG_MODULE(button_interrupt)
 

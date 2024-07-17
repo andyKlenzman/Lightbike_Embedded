@@ -14,6 +14,9 @@
 #include "../utils/gamma8_table.c"
 #include "ws2812b.h"
 #include "logging.h"
+#include "gpio.h"
+#include "defines.h"
+
 
 #define LED_DATA_PACKET_SIZE  (9)
 #define IS_NORMALIZED(x)      ((x >= 0.0F) && (x <= 1.0F))
@@ -98,8 +101,22 @@ void init_spi_lookup_table() {
  * @return 0 on success, -1 on failure.
  */
 int led_strip_init(int num_pixels) {
+    int result;
+
     init_spi_lookup_table();
     g_led_strip_num_pixels = num_pixels;
+
+    result = gpio_set_dir(LEDS_POWER_PIN, gpioPinDirOutput);
+    if (result == -1 ){
+        return -1;
+    }
+
+    result = gpio_set(LEDS_POWER_PIN,gpioLogicHigh);
+    if (result == -1 ){
+        LOG_DEBUG("failed gpio set");
+        return -1;
+    }
+
 
     buffer_size_bytes = LED_DATA_PACKET_SIZE * g_led_strip_num_pixels; // 8 * 50 = 450 bytes
     g_led_strip_data_buf = (uint8_t *) malloc(buffer_size_bytes);
