@@ -16,7 +16,7 @@
  */
 #pragma once
 
-#define ICM_20649_DEVICE_ADDRESS (0b1101000)
+#define ICM_20649_DEVICE_ADDRESS (0b1101001)
 
 
 /********************************************//**
@@ -28,7 +28,9 @@
 #define ICM_20649_B0_LP_CONFIG (0x05)
 #define ICM_20649_B0_DISABLE_SENSORS (0x05)
 
-// accelerometer registers
+/********************************************//**
+ * ACCELEROMETER REGISTERS
+ ***********************************************/
 #define ICM_20649_B0_ACCEL_XOUT_H (0x2D)
 #define ICM_20649_B0_ACCEL_XOUT_L (0x2E)
 #define ICM_20649_B0_ACCEL_YOUT_H (0x2F)
@@ -37,7 +39,9 @@
 #define ICM_20649_B0_ACCEL_ZOUT_L (0x32)
 
 
-// gyroscope registers
+/********************************************//**
+ * GYROSCOPE REGISTERS
+ ***********************************************/
 #define ICM_20649_B0_GYRO_XOUTL (0x34)
 
 #define ICM_20649_BX_REG_BANK_SEL (0x7F)
@@ -45,7 +49,7 @@
 /********************************************//**
  * SETTINGS
  ***********************************************/
-#define ICM_20649_USER_CTRL_SETTINGS (0x20) // 1 enables I2C
+#define ICM_20649_USER_CTRL_SETTINGS (0x20) // WHAT THE FUCK IS THIS SHITTY DOCUMENTATION!!!! 1 enables I2C
 #define ICM_20649_LP_CONFIG (0x05)
 #define ICM_20649_B0_PWR_MGMT_1_SETTINGS (0x00)
 #define ICM_20649_B2_ACCEL_CONFIG_SETTINGS (0X07)

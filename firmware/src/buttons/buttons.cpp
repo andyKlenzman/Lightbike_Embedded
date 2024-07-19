@@ -13,7 +13,9 @@ LOG_MODULE(button_interrupt)
  * Rotates through different application states (LEDFilters).
  */
 void mode_button_irq_function() {
-        current_state = static_cast<AppState>((current_state + 1) % MODE_MAX);
+    LOG_DEBUG("MODE BUTTON FIRE");
+    current_state = static_cast<AppState>((current_state + 1) % MODE_MAX);
+
     }
 
 
@@ -24,6 +26,7 @@ void mode_button_irq_function() {
  * Note: Implementation details for turning off are pending.
  */
 void power_button_irq_function() {
+    LOG_DEBUG("POWER BUTTON FIRE");
 }
 
 /**
@@ -43,7 +46,7 @@ int button_init(uint32_t gpio_pin, gpio_irq_cb_t irq_handler) {
         return -1;
     }
 
-    result = gpio_register_interrupt(gpio_pin, gpioIrqBothEdges, irq_handler);
+    result = gpio_register_interrupt(gpio_pin, gpioIrqRisingEdge, irq_handler);
     if (result == -1 ){
         return -1;
     }

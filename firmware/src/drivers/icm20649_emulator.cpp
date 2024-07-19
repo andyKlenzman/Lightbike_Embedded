@@ -1,6 +1,6 @@
 #include "driver.h"
 #include "i2c.h"
-#include "icm20649_defs.h"
+#include "icm20649_defines.h"
 #include "logging.h"
 #include "icm20649.h"
 #include <kernel.h>
@@ -19,8 +19,8 @@ LOG_MODULE(ICM_20649_Emulator)
 #define READ_BUFFER_SIZE_BYTES  (1)
 #define WRITE_BUFFER_SIZE_BYTES  (1)
 
-uint8_t *p_read_buffer;
-uint8_t *p_icm_write_buffer;
+uint8_t *p_icm_read_buffer;
+uint8_t *p_write_buffer;
 
 
 uint8_t *generate_random_numbers() {
@@ -72,18 +72,18 @@ int icm_20649_read_accel_data (uint8_t accel_data[])
 
 uint8_t icm_20649_return_register_val (uint8_t reg) {
 
-    p_read_buffer = generate_random_numbers();
-    return *p_read_buffer;
+    p_icm_read_buffer = generate_random_numbers();
+    return *p_icm_read_buffer;
 
 }
 
 
 int icm_20649_init () {
     LOG_DEBUG("Emulator running");
-    p_read_buffer = (uint8_t *) malloc (READ_BUFFER_SIZE_BYTES);
-    p_icm_write_buffer = (uint8_t *) malloc (WRITE_BUFFER_SIZE_BYTES);
+    p_icm_read_buffer = (uint8_t *) malloc (READ_BUFFER_SIZE_BYTES);
+    p_write_buffer = (uint8_t *) malloc (WRITE_BUFFER_SIZE_BYTES);
 
-    if (p_read_buffer == NULL || p_icm_write_buffer == NULL) {
+    if (p_icm_read_buffer == NULL || p_write_buffer == NULL) {
         LOG_ERROR("Failed to allocate memory for read and write buffer.");
         return -1;
     }

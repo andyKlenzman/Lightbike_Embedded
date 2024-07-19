@@ -1,11 +1,13 @@
 #include "driver.h"
 #include "i2c.h"
-#include "icm20649_defs.h"
+#include "icm20649_defines.h"
 #include "logging.h"
 #include "icm20649.h"
 #include <kernel.h>
 #include "utils/combine_bytes.c"
 #include "utils/map_value.c"
+#include "gpio.h"
+#include "defines.h"
 
 
 LOG_MODULE(ICM_20649)
@@ -15,7 +17,7 @@ LOG_MODULE(ICM_20649)
 
 static int i2c_device;
 uint8_t *p_read_buffer;
-uint8_t *p_icm_write_buffer;
+uint8_t *p_write_buffer;
 
 /********************************************//**
  * @brief Initializes data buffers for communication with the ICM.
@@ -33,21 +35,22 @@ uint8_t *p_icm_write_buffer;
 int icm_20649_init ()
 {
     p_read_buffer = (uint8_t *) malloc (READ_BUFFER_SIZE_BYTES);
-    p_icm_write_buffer = (uint8_t *) malloc (WRITE_BUFFER_SIZE_BYTES);
+    p_write_buffer = (uint8_t *) malloc (WRITE_BUFFER_SIZE_BYTES);
 
-    if (p_read_buffer == NULL || p_icm_write_buffer == NULL) {
+    if (p_read_buffer == NULL || p_write_buffer == NULL) {
         LOG_ERROR("Failed to allocate memory for read and write buffer.");
         return -1;
     }
 
     memset (p_read_buffer , 0, READ_BUFFER_SIZE_BYTES);
-    memset (p_icm_write_buffer , 0, WRITE_BUFFER_SIZE_BYTES);
+    memset (p_write_buffer , 0, WRITE_BUFFER_SIZE_BYTES);
 
     i2c_device = open ("i2c1");
     if (i2c_device == -1) {
         LOG_ERROR("I2C driver failed to open.");
         return -1;
     }
+
 
     int result = icm_20649_write_reg (ICM_20649_B0_PWR_MGMT_1, ICM_20649_B0_PWR_MGMT_1_SETTINGS);
     if (result == -1){
@@ -67,8 +70,6 @@ int icm_20649_init ()
         LOG_ERROR("Failed to select register bank 0.");
         return -1;
     }
-
-
 
     return 0;
 }
@@ -108,10 +109,10 @@ int icm_20649_init_accel ()
 
 uint8_t icm_20649_return_register_val (uint8_t reg) {
     int result = i2c_read_reg(i2c_device,
-                                 ICM_20649_DEVICE_ADDRESS,
-                                 reg,
-                                 p_read_buffer,
-                                 READ_BUFFER_SIZE_BYTES);
+                              ICM_20649_DEVICE_ADDRESS,
+                              reg,
+                              p_read_buffer,
+                              READ_BUFFER_SIZE_BYTES);
 
 
     if(result == -1){
@@ -124,20 +125,6 @@ uint8_t icm_20649_return_register_val (uint8_t reg) {
 
 
 /********************************************//**
- * @brief Retrieves the data stored in the read buffer of the ICM20649 sensor.
- *
- * This function returns the data stored in the read buffer of the ICM20649 sensor.
- *
- * @return The data stored in the read buffer as an unsigned 8-bit integer.
- ***********************************************/
-uint8_t icm_20649_get_read_buffer()
-{
-        return *p_read_buffer;
-};
-
-
-
-/********************************************//**
  * @brief Writes data to a register of the ICM20649 sensor.
  *
  * This function writes the specified data to the specified register of the ICM20649 sensor
@@ -145,18 +132,18 @@ uint8_t icm_20649_get_read_buffer()
  * @param reg The register address to which the data will be written.
  * @param data The data to be written to the register.
  *
- * @note The write buffer (`p_icm_write_buffer`) is used to store the data to be written
+ * @note The write buffer (`p_write_buffer`) is used to store the data to be written
  *       to the register.
  ***********************************************/
 int icm_20649_write_reg (uint8_t reg, uint8_t data)
 {
     uint32_t ts = osKernelGetTickCount();
-    memset (p_icm_write_buffer , data, WRITE_BUFFER_SIZE_BYTES);
+    memset (p_write_buffer , data, WRITE_BUFFER_SIZE_BYTES);
 
     int result = i2c_write_reg (i2c_device,
                                 ICM_20649_DEVICE_ADDRESS,
                                 reg,
-                                p_icm_write_buffer,
+                                p_write_buffer,
                                 WRITE_BUFFER_SIZE_BYTES);
 
     if(result < 0){

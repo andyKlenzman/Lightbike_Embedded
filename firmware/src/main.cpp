@@ -11,7 +11,7 @@
  It is attached to a bike axel inside a case and the LEDs are
  wrapped around the wheel to make patterns.
 
- It is configured for the EFR32MG24 processor.
+It is configured for the EFR32MG24 processor. The ICM20649
 
 Here are the parts of the program I should describe:
 
@@ -36,13 +36,12 @@ Here are the parts of the program I should describe:
 
 
 
- Naming Conventions:
+ Naming Conventions
+ Log modules: all caps for the name. Example: LOG_MODULE(ICM_20649)
 
+ Do not abbreviate
+ - defines
 
-
-
- |
- |
  | Deficiencies:  [If you know of any problems with the code, provide
  |                details here, otherwise clearly state that you know
  |                of no unsatisfied requirements and no logic errors.]
@@ -64,6 +63,8 @@ Here are the parts of the program I should describe:
 
 LOG_MODULE(main)
 
+/* virtual_leds are transformed inside the program, and
+ * then pushed to the actual leds */
 uint8_t virtual_leds[NUM_PIXELS][3];
 uint8_t accel_data[3];
 
@@ -71,8 +72,8 @@ uint8_t *LEDFilter::p_accel_data = accel_data;
 uint8_t (*LEDFilter::p_virtual_leds)[3] = virtual_leds;
 
 int main(void) {
-    LOG_DEBUG("PROGRAM STARTED");
     int result;
+
     result = led_strip_init(NUM_PIXELS);
     if (result == -1) {
         LOG_ERROR("LED init failed.");
@@ -98,13 +99,19 @@ int main(void) {
         uint32_t ts = osKernelGetTickCount();
 
         result = icm_20649_read_accel_data(accel_data);
+//        LOG_DEBUG("Accelerometer data: X=%u, Y=%u, Z=%u\n", accel_data[0], accel_data[1], accel_data[2]);
         if (result == -1) {
             LOG_ERROR("icm_20649_read_accel_data failed.");
         }
 
-        state_handlers[current_state]();
+//        state_handlers[current_state]();
+//        for (int i = 0; i < NUM_PIXELS; i++) {
+//            led_strip_set_led(i, virtual_leds[i][0], virtual_leds[i][1], virtual_leds[i][2]);
+//        }
+
+//      Tester function to ensure running of the LEDS
         for (int i = 0; i < NUM_PIXELS; i++) {
-            led_strip_set_led(i, virtual_leds[i][0], virtual_leds[i][1], virtual_leds[i][2]);
+            led_strip_set_led(i, 100, 0, 0);
         }
 
         led_strip_update();
