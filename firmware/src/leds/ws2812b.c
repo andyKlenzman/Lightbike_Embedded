@@ -11,7 +11,7 @@
 #include "driver.h"
 #include "spi.h"
 #include "kernel.h"
-#include "../utils/gamma8_table.c"
+#include "utils/gamma8_table.c"
 #include "ws2812b.h"
 #include "logging.h"
 #include "gpio.h"
@@ -106,21 +106,14 @@ int led_strip_init(int num_pixels) {
     init_spi_lookup_table();
     g_led_strip_num_pixels = num_pixels;
 
-/*=============================================================================
-According to Steffen Klein's data sheet on our PCB, the LED power supply pin
-must be set to HIGH in order to give power to the LEDs.
-*===========================================================================*/
-    result = gpio_set_dir(LEDS_POWER_PIN, gpioPinDirOutput);
-    result = gpio_set(LEDS_POWER_PIN, gpioLogicHigh);
-    if (result == -1 ){
-        return -1;
-    }
 
-    result = gpio_set(LEDS_POWER_PIN,gpioLogicHigh);
-    if (result == -1 ){
-        LOG_DEBUG("failed gpio set");
-        return -1;
-    }
+    /* Turn on LED */
+    gpio_set_dir(LEDS_POWER_PIN, gpioPinDirOutput);
+    result = gpio_set(LEDS_POWER_PIN, gpioLogicHigh);
+    if (result == -1) {
+        LOG_DEBUG("Failed to turn the LEDS_POWER_PIN to HIGH");
+
+    };
 
 
 

@@ -37,11 +37,11 @@ StateHandler state_handlers[MODE_MAX] = {
 LEDFilter_Smooth led_filter_smooth;
 LEDFilter_Basic led_filter_basic;
 
-void handle_basic_mode() {
+void handle_smooth_mode() {
     led_filter_smooth.apply_filter();
 }
 
-void handle_smooth_mode() {
+void handle_basic_mode() {
     led_filter_basic.apply_filter();
 }
 

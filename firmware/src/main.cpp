@@ -1,58 +1,58 @@
 /*=============================================================================
- |       Project:  Lightbike
- |       Author:  Andy Klenzman ak@imagineon.de
- |
- |
- |
+Project:  Lightbike
+Author:   Andy Klenzman (ak@imagineon.de)
+Description:
 
- Description:
- Lightbike transforms accelerometer and gyroscope
- data from an ICM20649 into patterns onto WS2812B LEDs.
- It is attached to a bike axel inside a case and the LEDs are
- wrapped around the wheel to make patterns.
+Lightbike is an embedded system that increases bicycle visibility and aesthetics
+through motion-responsive LED patterns. The system utilizes a set of motion-powered
+LEDs that are mounted around bike spokes. As the bike moves, the LEDs create
+responsive light patterns based on the bike's movement.
 
-It is configured for the EFR32MG24 processor. The ICM20649
+The core of the Lightbike system is powered by the EFR32MG24 MCU.
+Motion data is collected using the ICM20649 sensor, which integrates both an
+ accelerometer and a gyroscope, and communicates via the I2C protocol.
 
-Here are the parts of the program I should describe:
+The LEDs used are WS2812, which are controlled through precise level shifting
+provided by the SN74LVC1T45DBV and an Serial Peripheral Interface (SPI). This
+ensures accurate signal transmission for the LEDs' color and brightness control.
 
- LEDFilters
+### LED Control and Filtering
+LED control is managed by `LEDFilters`, a set of specialized classes designed
+ to interact with the accelerometer data and, in future versions, the gyroscope
+ data. This design choice ensures consistent formatting and extensibility,
+ allowing for easy addition of new features and LED patterns.
 
+To integrate a new LED filter, you will need to modify the `state_handlers`
+ file. For detailed instructions on creating and adding new filters,
+ please refer to the in-file documentation.
 
+### User Interface
+The system's power and lighting pattern modes are controlled via physical buttons.
+ The implementation for the power button and state change button is still pending.
 
- Overall Application Flow
+### Program Flow
+The program starts with the initialization of the hardware components mentioned above.
+ Implementation details for these components are contained within their respective files.
 
- Main Folders
- ColdwaveOS -
- ColdwaveOS is a distribution of COldwave by ImagineOn. It is set up particularly
- for my microcontroller architecture.
+Following initialization, the main loop of the program executes, managing the LED
+ filters and updating the LED patterns based on the collected data.
 
- dist
+### Naming Conventions
+- **Log Modules:** Use all uppercase for module names. Example: `LOG_MODULE(ICM_20649)`.
+- **Defines:** Avoid abbreviations.
 
+### Deficiencies
+- The current documentation lacks detailed instructions on
+ how to add new LED filters and what modifications are needed in other files.
 
-
-
-
-
-
-
-
- Naming Conventions
- Log modules: all caps for the name. Example: LOG_MODULE(ICM_20649)
-
- Do not abbreviate
- - defines
-
- | Deficiencies:  [If you know of any problems with the code, provide
- |                details here, otherwise clearly state that you know
- |                of no unsatisfied requirements and no logic errors.]
- *===========================================================================*/
+*===========================================================================*/
 
 
 #include <kernel.h>
 #include <cstdio>
 #include "logging.h"
 
-#include "drivers/ws2812b.h"
+#include "leds/ws2812b.h"
 #include "drivers/icm20649.h"
 
 #include "defines.h"
@@ -99,19 +99,15 @@ int main(void) {
         uint32_t ts = osKernelGetTickCount();
 
         result = icm_20649_read_accel_data(accel_data);
-//        LOG_DEBUG("Accelerometer data: X=%u, Y=%u, Z=%u\n", accel_data[0], accel_data[1], accel_data[2]);
+        LOG_DEBUG("Accelerometer data: X=%u, Y=%u, Z=%u\n", accel_data[0], accel_data[1], accel_data[2]);
         if (result == -1) {
             LOG_ERROR("icm_20649_read_accel_data failed.");
         }
 
-//        state_handlers[current_state]();
-//        for (int i = 0; i < NUM_PIXELS; i++) {
-//            led_strip_set_led(i, virtual_leds[i][0], virtual_leds[i][1], virtual_leds[i][2]);
-//        }
-
-//      Tester function to ensure running of the LEDS
+        state_handlers[current_state]();
         for (int i = 0; i < NUM_PIXELS; i++) {
-            led_strip_set_led(i, 100, 0, 0);
+            LOG_DEBUG("Setting LED %d to R: %d, G: %d, B: %d\n", i, virtual_leds[i][0], virtual_leds[i][1], virtual_leds[i][2]);
+            led_strip_set_led(i, virtual_leds[i][0], virtual_leds[i][1], virtual_leds[i][2]);
         }
 
         led_strip_update();

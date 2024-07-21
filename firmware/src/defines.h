@@ -17,7 +17,6 @@
 #define GPIO_PUSH_BTN_1 (100) //PB00
 #define GPIO_PUSH_BTN_2 (101) //PB01
 
-#define LEDS_DATA_PIN (102) //PB02
 #define LEDS_POWER_PIN  (300) //PD00
 
 
@@ -32,6 +31,16 @@
 
 /* Set 1 or 0 to address two, 7-bit address spaces in the ICM??*/
 #define ICM_SLAVE_ADDRESS_PIN (205) // PC05
+
+/* SPI pins */
+#define SPI_MEMORY_MAPPED_ADDRESS (0x5005C000UL)
+#define SPI_GPIO_MOSI (102) //PB02
+#define SPI_GPIO_CLOCK (206) //PC06
+#define SPI_GPIO_MISO ()
+#define SPI_BAUDRATE (2500000) // 2.5 mHz
+#define SPI_GPIO_CHIP_SELECT (204) //PC04
+
+
 
 
 

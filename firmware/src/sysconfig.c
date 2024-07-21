@@ -10,16 +10,18 @@
 #include <sysconfig.h>
 #include "defines.h"
 
+
 sysconf_use_driver(spi_gecko)
 sysconf_use_driver(i2c_gecko)
 
 
-sysconf_create_device("silabs-gecko-spi", spi0, 0x5005C000UL,
-                      sysconf_set_int_param (gpio_mosi, 201),
-                      sysconf_set_int_param (gpio_clk, 203),
+sysconf_create_device("silabs-gecko-spi", spi0, SPI_MEMORY_MAPPED_ADDRESS,
+                      sysconf_set_int_param (gpio_mosi, SPI_GPIO_MOSI),
+                      sysconf_set_int_param (gpio_clk, SPI_GPIO_CLOCK),
                       sysconf_set_int_param (gpio_miso, 202),
-                      sysconf_set_int_param (baudrate, 2500000), //2.5 mHz
-                      sysconf_set_int_param (gpio_cs, 200))
+                      sysconf_set_int_param (baudrate, SPI_BAUDRATE), //2.5 mHz
+//                      sysconf_set_int_param (gpio_cs, 200)
+)
 
 
 sysconf_create_device("silabs-gecko-i2c", i2c1, I2C_MEMORY_MAPPED_ADDRESS,

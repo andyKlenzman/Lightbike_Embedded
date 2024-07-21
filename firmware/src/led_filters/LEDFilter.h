@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 #include "../drivers/icm20649.h"
-#include "../drivers/ws2812b.h"
+#include "leds/ws2812b.h"
 #include "../defines.h"
 
 

@@ -32,7 +32,7 @@ if (USE_EMULATOR MATCHES OFF)
             src/utils/map_value.c
             src/utils/gamma8_table.c
 
-            src/drivers/ws2812b.c
+            src/leds/ws2812b.c
             src/drivers/icm20649.cpp
 
             src/led_filters/LEDFilter.cpp
@@ -59,7 +59,7 @@ if (USE_EMULATOR MATCHES ON)
             src/utils/map_value.c
             src/utils/gamma8_table.c
 
-            src/drivers/ws2812b.c
+            src/leds/ws2812b.c
             src/drivers/icm20649_emulator.cpp
 
             src/led_filters/LEDFilter.cpp
