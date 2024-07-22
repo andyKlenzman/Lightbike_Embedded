@@ -49,7 +49,6 @@ Following initialization, the main loop of the program executes, managing the LE
 
 
 #include <kernel.h>
-#include <cstdio>
 #include "logging.h"
 
 #include "leds/ws2812b.h"
@@ -60,6 +59,7 @@ Following initialization, the main loop of the program executes, managing the LE
 
 #include "state_handler/state_handler.h"
 #include "buttons/buttons.h"
+#include "utils/power_toggle.c"
 
 LOG_MODULE(main)
 
@@ -70,6 +70,8 @@ uint8_t accel_data[3];
 
 uint8_t *LEDFilter::p_accel_data = accel_data;
 uint8_t (*LEDFilter::p_virtual_leds)[3] = virtual_leds;
+
+volatile bool flag_toggle_system_power = false;
 
 int main(void) {
     int result;
@@ -103,12 +105,15 @@ int main(void) {
         if (result == -1) {
             LOG_ERROR("icm_20649_read_accel_data failed.");
         }
-        call_current_led_filter();
-        for (int i = 0; i < NUM_PIXELS; i++) {
-            led_strip_set_led(i, virtual_leds[i][0], virtual_leds[i][1], virtual_leds[i][2]);
-        }
 
-        led_strip_update();
+        call_current_led_filter();
+        set_leds(virtual_leds, NUM_PIXELS);
+
+        if(flag_toggle_system_power){
+            toggle_power();
+            flag_toggle_system_power = false;
+        }
+        update_leds();
         osDelayUntil(ts+30);
     }
 };

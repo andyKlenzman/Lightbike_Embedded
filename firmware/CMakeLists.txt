@@ -43,6 +43,8 @@ if (USE_EMULATOR MATCHES OFF)
             src/globals.h
             src/state_handler/state_handler.cpp
             src/buttons/buttons.h
+            src/utils/power_toggle.c
+            src/led_filters/LEDFilter_Nice.cpp
     )
 endif ()
 
@@ -72,6 +74,9 @@ if (USE_EMULATOR MATCHES ON)
             src/globals.h
             src/buttons/buttons.h
             src/state_handler/state_handler.cpp
+            src/led_filters/LEDFilter_Off.cpp
+            src/utils/power_toggle.c
+            src/led_filters/LEDFilter_Nice.cpp
     )
 endif ()
 

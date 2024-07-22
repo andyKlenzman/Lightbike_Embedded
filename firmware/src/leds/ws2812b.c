@@ -160,7 +160,7 @@ void led_strip_clear(int strip) {
 }
 
 
-void led_strip_update() {
+void update_leds() {
     spi_write(spi_dev, g_led_strip_data_buf, buffer_size_bytes);
     //spi_write (spi_dev, nulls, RESET_CODE_LENGTH); // I might need to hard code a delay as project timing changes.
 
@@ -178,4 +178,11 @@ void led_strip_white_balance(float r, float g, float b) {
 
 int led_strip_get_num_pixels() {
     return g_led_strip_num_pixels;
+}
+
+
+void set_leds(uint8_t (*virtual_leds)[3], int num_pixels){
+    for (int i = 0; i < NUM_PIXELS; i++) {
+        led_strip_set_led(i, virtual_leds[i][0], virtual_leds[i][1], virtual_leds[i][2]);
+    }
 }

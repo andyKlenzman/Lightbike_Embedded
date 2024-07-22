@@ -2,6 +2,7 @@
 #include "state_handler/state_handler.h"
 #include "logging.h"
 #include "gpio.h"
+#include "globals.h"
 
 LOG_MODULE(button_interrupt)
 
@@ -12,7 +13,7 @@ LOG_MODULE(button_interrupt)
  * It rotates through different application states, changing the LED filter mode.
  */
 void mode_button_irq_function() {
-    select_next_state();  // Move to the next state
+    increment_state();  // Move to the next state
 }
 
 /**
@@ -23,7 +24,8 @@ void mode_button_irq_function() {
  * Note: The implementation details for turning off are pending.
  */
 void power_button_irq_function() {
-    LOG_DEBUG("POWER BUTTON FIRE");  // Log power button press
+    LOG_DEBUG("POWER BUTTON FIRE");
+    flag_toggle_system_power = true;  // Flag variable to signal events
 }
 
 /**

@@ -1,15 +1,16 @@
 #pragma once
 
-enum AppState {
+typedef enum {
     MODE_BASIC,
     MODE_SMOOTH,
     MODE_OFF,
-    MODE_MAX
-};
+    MODE_MAX_VALUE
+} AppState;
 
 typedef void (*StateHandler)();
 
 extern AppState current_state;
-StateHandler select_next_state();
+StateHandler increment_state();
 void call_current_led_filter ();
-extern StateHandler state_handlers[MODE_MAX];
+void select_state(AppState desired_state);
+extern StateHandler state_handlers[MODE_BASIC];

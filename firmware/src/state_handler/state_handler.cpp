@@ -9,18 +9,25 @@
 
 #pragma once
 #include "globals.h"
+#include "logging.h"
+
+LOG_MODULE(STATE_HANDLER)
 
 // Function declarations for handling different modes
 void handle_basic_mode();
 void handle_smooth_mode();
+void handle_nice_mode();
+
 void handle_off_mode();
 
 // Enum to define different application states
 enum AppState {
     MODE_BASIC,    // Basic LED filter mode
     MODE_SMOOTH,   // Smooth LED filter mode
-    MODE_OFF,      // LED off mode
-    MODE_MAX       // Total number of modes (used for array bounds)
+    MODE_NICE,
+    MODE_OFF, // LED off mode
+    MODE_MAX_VALUE // Total number of modes (used for array bounds)
+
 };
 
 // Global variable to keep track of the current state
@@ -32,15 +39,18 @@ volatile AppState current_state = MODE_BASIC;
 typedef void (*StateHandler)();
 
 // Array of function pointers for handling each mode
-StateHandler state_handlers[MODE_MAX] = {
+StateHandler state_handlers[MODE_MAX_VALUE] = {
         handle_basic_mode,   // Handler for MODE_BASIC
-        handle_smooth_mode,  // Handler for MODE_SMOOTH
-        handle_off_mode      // Handler for MODE_OFF
+        handle_smooth_mode,
+        handle_nice_mode,
+        handle_off_mode// Handler for MODE_SMOOTH
 };
 
 // Instances of LED filter objects
 LEDFilter_Smooth led_filter_smooth;
 LEDFilter_Basic led_filter_basic;
+LEDFilter_Nice led_filter_nice;
+LEDFilter_Off led_filter_off;
 
 /**
  * @brief Handles the basic LED filter mode.
@@ -56,19 +66,28 @@ void handle_smooth_mode() {
     led_filter_smooth.apply_filter();
 }
 
+void handle_nice_mode() {
+    led_filter_nice.apply_filter();
+}
+
 /**
  * @brief Handles the off mode (currently does nothing).
  */
 void handle_off_mode() {
-    // No action needed for OFF mode
+    led_filter_off.apply_filter();
+
 }
 
 /**
  * @brief Cycles to the next state in the sequence.
  *        Wraps around to MODE_BASIC after MODE_OFF.
  */
-void select_next_state() {
-    current_state = static_cast<AppState>((current_state + 1) % MODE_MAX);
+void increment_state() {
+    current_state = static_cast<AppState>((current_state + 1) % MODE_OFF);
+}
+
+void select_state(AppState desired_state) {
+    current_state = desired_state;
 }
 
 /**
@@ -76,6 +95,7 @@ void select_next_state() {
  */
 void call_current_led_filter() {
     state_handlers[current_state]();
+
 }
 
 /*
@@ -105,7 +125,7 @@ void call_current_led_filter() {
  *    };
  *
  * 4. Ensure select_next_state() correctly cycles through the new mode if needed:
- *    void select_next_state() {
+ *    void increment_state() {
  *        current_state = static_cast<AppState>((current_state + 1) % MODE_MAX);
  *    }
  */
