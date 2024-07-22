@@ -3,36 +3,35 @@
 #include "logging.h"
 #include "gpio.h"
 
-
 LOG_MODULE(button_interrupt)
-
 
 /**
  * @brief Mode button IRQ function.
  *
- * Rotates through different application states (LEDFilters).
+ * This function is triggered by an interrupt from the mode button.
+ * It rotates through different application states, changing the LED filter mode.
  */
 void mode_button_irq_function() {
-    LOG_DEBUG("MODE BUTTON FIRE");
-    current_state = static_cast<AppState>((current_state + 1) % MODE_MAX);
-
-    }
-
+    select_next_state();  // Move to the next state
+}
 
 /**
  * @brief Power button IRQ function.
  *
- * Turns the device on and off.
- * Note: Implementation details for turning off are pending.
+ * This function is triggered by an interrupt from the power button.
+ * It is intended to turn the device on and off.
+ * Note: The implementation details for turning off are pending.
  */
 void power_button_irq_function() {
-    LOG_DEBUG("POWER BUTTON FIRE");
+    LOG_DEBUG("POWER BUTTON FIRE");  // Log power button press
 }
 
 /**
  * @brief Initializes a button using GPIO pin and IRQ handler.
  *
- * This function sets up a button with interrupt functionality on a specified GPIO pin.
+ * Sets up a button with interrupt functionality on a specified GPIO pin.
+ * This function configures the GPIO pin as an input, registers an interrupt
+ * handler for rising edge detection, and enables the interrupt.
  * Errors are reported but not handled further, intended for debugging purposes.
  *
  * @param[in] gpio_pin GPIO pin number as per hardware documentation.
@@ -41,20 +40,39 @@ void power_button_irq_function() {
  */
 int button_init(uint32_t gpio_pin, gpio_irq_cb_t irq_handler) {
     int result;
+
+    // Set GPIO pin direction to input
     result = gpio_set_dir(gpio_pin, gpioPinDirInput);
-    if (result == -1 ){
-        return -1;
+    if (result == -1) {
+        return -1;  // Return error if setting direction fails
     }
 
+    // Register the IRQ handler for rising edge
     result = gpio_register_interrupt(gpio_pin, gpioIrqRisingEdge, irq_handler);
-    if (result == -1 ){
-        return -1;
+    if (result == -1) {
+        return -1;  // Return error if registering interrupt fails
     }
 
+    // Enable the interrupt on the GPIO pin
     result = gpio_enable_interrupt(gpio_pin);
-    if (result == -1 ){
-        return -1;
+    if (result == -1) {
+        return -1;  // Return error if enabling interrupt fails
     }
 
-    return 0;
+    return 0;  // Return success if all operations succeed
 }
+
+/*
+ * To configure a new button:
+ * 1. Define an IRQ handler function for the button.
+ *    For example:
+ *    void new_button_irq_function() {
+ *        // Implement button-specific functionality here
+ *    }
+ *
+ * 2. Initialize the button with the appropriate GPIO pin and IRQ handler:
+ *    int result = button_init(GPIO_PIN_NUMBER, new_button_irq_function);
+ *
+ *    Replace GPIO_PIN_NUMBER with the actual pin number and
+ *    new_button_irq_function with your handler function.
+ */

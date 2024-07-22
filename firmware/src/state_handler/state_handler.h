@@ -7,8 +7,9 @@ enum AppState {
     MODE_MAX
 };
 
-extern AppState current_state;
-
 typedef void (*StateHandler)();
 
+extern AppState current_state;
+StateHandler select_next_state();
+void call_current_led_filter ();
 extern StateHandler state_handlers[MODE_MAX];

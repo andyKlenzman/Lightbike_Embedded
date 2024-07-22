@@ -99,14 +99,12 @@ int main(void) {
         uint32_t ts = osKernelGetTickCount();
 
         result = icm_20649_read_accel_data(accel_data);
-        LOG_DEBUG("Accelerometer data: X=%u, Y=%u, Z=%u\n", accel_data[0], accel_data[1], accel_data[2]);
+        // LOG_DEBUG("Accelerometer data: X=%u, Y=%u, Z=%u\n", accel_data[0], accel_data[1], accel_data[2]);
         if (result == -1) {
             LOG_ERROR("icm_20649_read_accel_data failed.");
         }
-
-        state_handlers[current_state]();
+        call_current_led_filter();
         for (int i = 0; i < NUM_PIXELS; i++) {
-            LOG_DEBUG("Setting LED %d to R: %d, G: %d, B: %d\n", i, virtual_leds[i][0], virtual_leds[i][1], virtual_leds[i][2]);
             led_strip_set_led(i, virtual_leds[i][0], virtual_leds[i][1], virtual_leds[i][2]);
         }
 
