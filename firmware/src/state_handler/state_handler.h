@@ -1,16 +1,17 @@
 #pragma once
 
+// Enum to define different application states
 typedef enum {
     MODE_BASIC,
     MODE_SMOOTH,
+    MODE_NICE,
     MODE_OFF,
     MODE_MAX_VALUE
 } AppState;
 
-typedef void (*StateHandler)();
+// Function declarations
+extern volatile AppState current_state;    // Current state of the application
 
-extern AppState current_state;
-StateHandler increment_state();
-void call_current_led_filter ();
-void select_state(AppState desired_state);
-extern StateHandler state_handlers[MODE_BASIC];
+void increment_state();                    // Function to cycle to the next state
+void select_state(AppState desired_state); // Function to select a specific state
+void call_current_led_filter();            // Function to call the LED filter for the current state

@@ -10,6 +10,7 @@
 #pragma once
 #include "globals.h"
 #include "logging.h"
+#include "state_handler.h"
 
 LOG_MODULE(STATE_HANDLER)
 
@@ -19,28 +20,8 @@ LEDFilter_Basic led_filter_basic;
 LEDFilter_Nice led_filter_nice;
 LEDFilter_Off led_filter_off;
 
-// Enum to define different application states
-enum AppState {
-    MODE_BASIC,    // Basic LED filter mode
-    MODE_SMOOTH,   // Smooth LED filter mode
-    MODE_NICE,     // Nice LED filter mode
-    MODE_OFF,      // LED off mode
-    MODE_MAX_VALUE // Total number of modes (used for array bounds)
-};
-
 // Global variable to keep track of the current state
 volatile AppState current_state = MODE_BASIC;
-
-/**
- * @brief StateHandler is a function pointer type for handling different LED filter modes.
- */
-typedef void (LEDFilter::*StateHandler)();
-StateHandler state_handlers[MODE_MAX_VALUE] = {
-        &LEDFilter::apply_filter,
-        &LEDFilter::apply_filter,
-        &LEDFilter::apply_filter,
-        &LEDFilter::apply_filter
-};
 
 // Array of LED filter objects corresponding to each state
 LEDFilter* led_filters[MODE_MAX_VALUE] = {
@@ -69,5 +50,5 @@ void select_state(AppState desired_state) {
  * @brief Calls the function associated with the current state.
  */
 void call_current_led_filter() {
-    (led_filters[current_state]->*state_handlers[current_state])();
+    led_filters[current_state]->apply_filter();
 }
