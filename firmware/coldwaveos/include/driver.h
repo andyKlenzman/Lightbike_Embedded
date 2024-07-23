@@ -33,7 +33,7 @@ extern "C" {
 /**
  * @defgroup core_driver Peripheral Drivers
  * @brief Peripheral Driver API
- * @details The following functions are needed to access peripheral drivers
+ * @details The following functions are needed to access peripheral icm20649
  *  before using them. The functions \ref open(const char *) and \ref close(int) are
  *  used to manage power saving and concurrency. Some devices like UARTs or ADC/DACs can only be opened once
  *  and need to be closed first before the device can be accessed from another thread while

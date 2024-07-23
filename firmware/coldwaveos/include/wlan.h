@@ -99,7 +99,7 @@ typedef struct wlan_ap_info {
 
 /**
  * @brief WLAN driver API
- * minimum API for WLAN drivers.
+ * minimum API for WLAN icm20649.
  */
 #ifndef EXCLUDE_FROM_DOCS
 struct wlan_driver

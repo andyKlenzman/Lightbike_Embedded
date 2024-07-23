@@ -9,7 +9,6 @@ project(Lightbike)
 # APP_VERSION is a hexadecimal byte
 SET(APP_VERSION 1)
 SET(APP_VERSION_STR "1.0.0")
-set(USE_EMULATOR CACHE BOOL "Use emulator")
 
 add_definitions(-DDEBUG)
 list(APPEND C_COMMON_FLAGS -falign-functions=4 -Og -g3)
@@ -20,20 +19,18 @@ if (CMAKE_BUILD_TYPE MATCHES Release)
     list(APPEND C_COMMON_FLAGS -falign-functions=4 -O3 )
 endif ()
 
-if (USE_EMULATOR MATCHES OFF)
-    message("USE EMULATOR MATCHES OFF: " ${USE_EMULATOR})
 
     SET(LIGHTBIKE_FILES
             src/main.cpp
             src/sysconfig.c
 
             src/utils/utils.cpp
-            src/utils/combine_bytes.c
-            src/utils/map_value.c
+            src/utils/combine_bytes.h
+            src/utils/map_value.h
             src/utils/gamma8_table.c
 
-            src/leds/ws2812b.c
-            src/drivers/icm20649.cpp
+            src/ws2812b/ws2812b.c
+            src/icm20649/icm20649.cpp
 
             src/led_filters/LEDFilter_Basic.cpp
             src/led_filters/LEDFilter_Smooth.cpp
@@ -45,39 +42,6 @@ if (USE_EMULATOR MATCHES OFF)
             src/utils/power_toggle.c
             src/led_filters/LEDFilter_Nice.cpp
     )
-endif ()
-
-if (USE_EMULATOR MATCHES ON)
-
-    message("USE EMULATOR MATCHES ON: " ${USE_EMULATOR})
-
-    SET(LIGHTBIKE_FILES
-            src/main.cpp
-            src/sysconfig.c
-
-            src/utils/utils.cpp
-            src/utils/combine_bytes.c
-            src/utils/map_value.c
-            src/utils/gamma8_table.c
-
-            src/leds/ws2812b.c
-            src/drivers/icm20649_emulator.cpp
-
-            src/led_filters/LEDFilter_Basic.cpp
-            src/led_filters/LEDFilter_Smooth.cpp
-            src/defines.h
-
-
-            src/buttons/buttons.cpp
-            src/globals.h
-            src/buttons/buttons.h
-            src/state_handler/state_handler.cpp
-            src/led_filters/LEDFilter_Off.cpp
-            src/utils/power_toggle.c
-            src/led_filters/LEDFilter_Nice.cpp
-            src/led_filters/LEDFilter.h
-    )
-endif ()
 
 add_executable(Lightbike ${LIGHTBIKE_FILES})
 

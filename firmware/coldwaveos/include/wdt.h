@@ -27,7 +27,7 @@ extern "C" {
 
 /**
  * @brief ADWDTC driver API
- * minimum API for WDT drivers.
+ * minimum API for WDT icm20649.
  */
 #ifndef EXCLUDE_FROM_DOCS
 struct wdt_driver

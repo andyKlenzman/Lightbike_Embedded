@@ -56,14 +56,14 @@ Following initialization, the main loop of the program executes, managing the LE
 #include <kernel.h>
 #include "logging.h"
 
-#include "leds/ws2812b.h"
-#include "drivers/icm20649.h"
-
 #include "defines.h"
 #include "globals.h"
 
-#include "state_handler/state_handler.h"
+#include "ws2812b/ws2812b.h"
+#include "icm20649/icm20649.h"
 #include "buttons/buttons.h"
+
+#include "state_handler/state_handler.h"
 #include "utils/power_toggle.c"
 
 LOG_MODULE(main)
@@ -73,6 +73,7 @@ LOG_MODULE(main)
  * through the SPI, and then pushed inside the while loop. */
 uint8_t virtual_leds[NUM_PIXELS][3];
 uint8_t accel_data[3];
+uint8_t gyro_data[3];
 
 /* the pointer inside the LEDFilter class, the base class
  * for LEDFilters which transform motion data into LED patterns,
@@ -80,6 +81,8 @@ uint8_t accel_data[3];
  * the main program loop, as it is being manipulated inside of the
  * LEDFilter. */
 uint8_t *LEDFilter::p_accel_data = accel_data;
+uint8_t *LEDFilter::p_gyro_data = gyro_data;
+
 uint8_t (*LEDFilter::p_virtual_leds)[3] = virtual_leds;
 
 volatile bool flag_toggle_system_power = false;
@@ -110,12 +113,23 @@ int main(void) {
 
     while (1) {
         uint32_t ts = osKernelGetTickCount();
-        
+
+
+        //result = icm_20649_read_gyro_data(gyro_data);
+        // LOG_DEBUG("GYRO data: X=%u, Y=%u, Z=%u\n", gyro_data[0], gyro_data[1], gyro_data[2]);
+//        if (result == -1) {
+//            LOG_ERROR("icm_20649_read_gyro_data failed.");
+//        }
+
+
         result = icm_20649_read_accel_data(accel_data);
         // LOG_DEBUG("Accelerometer data: X=%u, Y=%u, Z=%u\n", accel_data[0], accel_data[1], accel_data[2]);
         if (result == -1) {
             LOG_ERROR("icm_20649_read_accel_data failed.");
         }
+
+
+
 
         call_current_led_filter();
         set_leds(virtual_leds, NUM_PIXELS);
@@ -124,8 +138,9 @@ int main(void) {
             flag_toggle_system_power = false;
         }
         update_leds();
+        osDelayUntil(ts+15);
+
 
         /* What happens if I remove this delay? Why did I put this here in the first place? */
-        osDelayUntil(ts+30);
     }
 };

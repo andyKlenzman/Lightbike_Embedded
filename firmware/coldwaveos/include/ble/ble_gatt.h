@@ -82,7 +82,7 @@ struct ble_gatt {
     /// Free the resources taken by the Gatt-instance. Should be called before closing the driver handle
     void (*deinit) (void);
 
-    /// Some BLE drivers need some time to free up all resources.
+    /// Some BLE icm20649 need some time to free up all resources.
     /// Since \ref deinit(void) is non-blocking, the successful finalization of the deinit process can
     /// be checked by calling this function.
     /// \return true if deinitialization has finished.
@@ -171,7 +171,7 @@ struct ble_gatt {
     int32_t (*get_attribute_type) (uint16_t handle, uint8_t *bytes, uint16_t max_bytes, uint16_t *num_bytes);
 
     /// Get the currently active (negotiated) MTU for a connection in bytes.
-    /// \return the currently active (negotiated) MTU for a connection in bytes or the drivers default MTU if
+    /// \return the currently active (negotiated) MTU for a connection in bytes or the icm20649 default MTU if
     /// there is no active connection.
     uint16_t (*get_mtu) (void);
 

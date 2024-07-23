@@ -42,7 +42,7 @@ struct dac_driver
 
 ///
 /// \param hDev device handle as returned by \ref open(const char*)
-/// \param val set the value according to the HAL peripheral drivers translation function.
+/// \param val set the value according to the HAL peripheral icm20649 translation function.
 ///     for a 12bit DAC e.g passing 4095 will output the max voltage vRef.
 CW_DRIVER_FUNC
 dac_convert (int hDev, uint32_t val)

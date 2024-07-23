@@ -16,7 +16,7 @@ extern "C" {
 
 /**
  * @brief Clock driver API
- * minimum API for Clock drivers.
+ * minimum API for Clock icm20649.
  */
 
 #ifndef EXCLUDE_FROM_DOCS

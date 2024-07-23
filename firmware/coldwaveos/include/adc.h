@@ -35,7 +35,7 @@ extern "C" {
 #ifndef EXCLUDE_FROM_DOCS
 /**
  * @brief ADC driver API
- * minimum API for ADC drivers.
+ * minimum API for ADC icm20649.
  */
 struct adc_driver {
     struct driver drv;
@@ -46,7 +46,7 @@ struct adc_driver {
 
 ///
 /// \param hdev device handle as returned by \ref open(const char*)
-/// \param channel some analog peripheral drivers differentiate different pin outputs via channels.
+/// \param channel some analog peripheral icm20649 differentiate different pin outputs via channels.
 ///     if this is not required by the HAL driver, simply pass 0 here.
 /// \return the value returned by the driver
 /// \return -ENODEV if the device handle is invalid

@@ -51,7 +51,7 @@ struct pwm_driver
 /// \details when enabled, the pin will output the PWM signal configured by a previous call to \ref pwm_set_duty_cycle
 ///    or to "0%" if the channel wasn't configured before.
 /// \param hDev device handle as returned by \ref open(const char*)
-/// \param channel some PWM peripheral drivers differentiate different pin outputs via channels.
+/// \param channel some PWM peripheral icm20649 differentiate different pin outputs via channels.
 ///     the pin-to-channel assignments will be set in the SysConf.
 ///     If this is not required by the HAL driver, simply pass 0 here.
 CW_DRIVER_FUNC
@@ -63,7 +63,7 @@ CW_DRIVER_CALL(pwm, enable, hDev, channel);
 /// \details disabling the output will effectively result in a low level on the pin,
 ///     or if the driver supports inversion and it is enabled in the SysConf a high level, respectively.
 /// \param hDev  device handle as returned by \ref open(const char*)
-/// \param channel some PWM peripheral drivers differentiate different pin outputs via channels.
+/// \param channel some PWM peripheral icm20649 differentiate different pin outputs via channels.
 ///     the pin-to-channel assignments will be set in the SysConf.
 ///     If this is not required by the HAL driver, simply pass 0 here.
 CW_DRIVER_FUNC
@@ -74,7 +74,7 @@ CW_DRIVER_CALL(pwm, disable, hDev, channel);
 /// \brief configure the PWM output ratio.
 /// \details the PWM signal will be high for (period_us / duty_us * 100) % of the time.
 /// \param hDev  device handle as returned by \ref open(const char*)
-/// \param channel channel some PWM peripheral drivers differentiate different pin outputs via channels.
+/// \param channel channel some PWM peripheral icm20649 differentiate different pin outputs via channels.
 ///    the pin-to-channel assignments will be set in the SysConf.
 ///     If this is not required by the HAL driver, simply pass 0 here.
 /// \param duty_cycle normalized length of the duty period (0 .. 1).

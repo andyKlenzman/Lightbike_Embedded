@@ -16,7 +16,7 @@ extern "C" {
 
 /**
  * @brief PSA driver API
- * minimum API for PSA drivers.
+ * minimum API for PSA icm20649.
  */
 #ifndef EXCLUDE_FROM_DOCS
 struct psa_driver

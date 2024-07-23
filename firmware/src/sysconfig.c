@@ -3,7 +3,7 @@
  * Author: Andrew Klenzman
  * Date:
  * Description: This file contains the configuration of the SPI and
- * i2c drivers.
+ * i2c icm20649.
  * Deficiencies:
  */
 
