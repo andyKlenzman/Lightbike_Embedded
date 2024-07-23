@@ -149,7 +149,7 @@ int icm_20649_write_reg(uint8_t reg, uint8_t data) {
  * @param accel_data Array to store the accelerometer data.
  * @return 0 on success, -1 on failure.
  */
-int icm_20649_read_accel_data_old(uint8_t accel_data[]) {
+int icm_20649_read_accel_data(uint8_t accel_data[]) {
     uint8_t reg_addrs[6] = {
             ICM_20649_B0_ACCEL_XOUT_H,
             ICM_20649_B0_ACCEL_XOUT_L,
@@ -215,36 +215,11 @@ int icm_20649_read_gyro_data(uint8_t gyro_data[]) {
 
     // Map values to the output array
     for (int i = 0; i < 3; i++) {
+        LOG_DEBUG("Gyro output[%d]: %f", i, (float)gyro_outs[i]);
+
         gyro_data[i] = map_value(gyro_outs[i]);
     }
 
     return 0;
 }
 
-
-
-int icm_20649_read_accel_data(uint8_t accel_data[]) {
-    uint8_t accel_xout_h = icm_20649_return_register_val(ICM_20649_B0_ACCEL_XOUT_H);
-    uint8_t accel_xout_l = icm_20649_return_register_val(ICM_20649_B0_ACCEL_XOUT_L);
-    uint8_t accel_yout_h = icm_20649_return_register_val(ICM_20649_B0_ACCEL_YOUT_H);
-    uint8_t accel_yout_l = icm_20649_return_register_val(ICM_20649_B0_ACCEL_YOUT_L);
-    uint8_t accel_zout_h = icm_20649_return_register_val(ICM_20649_B0_ACCEL_ZOUT_H);
-    uint8_t accel_zout_l = icm_20649_return_register_val(ICM_20649_B0_ACCEL_ZOUT_L);
-
-    if (accel_xout_l == (uint8_t)-1 || accel_xout_h == (uint8_t)-1 ||
-        accel_yout_l == (uint8_t)-1 || accel_yout_h == (uint8_t)-1 ||
-        accel_zout_l == (uint8_t)-1 || accel_zout_h == (uint8_t)-1) {
-        LOG_DEBUG("icm_20649_read_accel_data: One or more failed register reads.");
-        return -1;
-    }
-
-    float accel_xout = (float)combine_bytes(accel_xout_h, accel_xout_l) / ACCEL_FS_8192_LSB_PER_G;
-    float accel_yout = (float)combine_bytes(accel_yout_h, accel_yout_l) / ACCEL_FS_8192_LSB_PER_G;
-    float accel_zout = (float)combine_bytes(accel_zout_h, accel_zout_l) / ACCEL_FS_8192_LSB_PER_G;
-
-    accel_data[0] = map_value(accel_xout);
-    accel_data[1] = map_value(accel_yout);
-    accel_data[2] = map_value(accel_zout);
-
-    return 0;
-}

@@ -115,11 +115,11 @@ int main(void) {
         uint32_t ts = osKernelGetTickCount();
 
 
-        //result = icm_20649_read_gyro_data(gyro_data);
+        result = icm_20649_read_gyro_data(gyro_data);
         // LOG_DEBUG("GYRO data: X=%u, Y=%u, Z=%u\n", gyro_data[0], gyro_data[1], gyro_data[2]);
-//        if (result == -1) {
-//            LOG_ERROR("icm_20649_read_gyro_data failed.");
-//        }
+        if (result == -1) {
+            LOG_ERROR("icm_20649_read_gyro_data failed.");
+        }
 
 
         result = icm_20649_read_accel_data(accel_data);
@@ -138,9 +138,9 @@ int main(void) {
             flag_toggle_system_power = false;
         }
         update_leds();
-        osDelayUntil(ts+15);
-
 
         /* What happens if I remove this delay? Why did I put this here in the first place? */
+        osDelayUntil(ts+15);
+
     }
 };
