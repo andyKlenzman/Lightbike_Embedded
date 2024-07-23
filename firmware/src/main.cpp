@@ -10,7 +10,7 @@ responsive light patterns based on the bike's movement.
 
 The core of the Lightbike system is powered by the EFR32MG24 MCU.
 Motion data is collected using the ICM20649 sensor, which integrates both an
- accelerometer and a gyroscope, and communicates via the I2C protocol.
+accelerometer and a gyroscope, and communicates via the I2C protocol.
 
 The LEDs used are WS2812, which are controlled through precise level shifting
 provided by the SN74LVC1T45DBV and an Serial Peripheral Interface (SPI). This
@@ -28,22 +28,27 @@ To integrate a new LED filter, you will need to modify the `state_handlers`
 
 ### User Interface
 The system's power and lighting pattern modes are controlled via physical buttons.
- The implementation for the power button and state change button is still pending.
+ The lighting pattern modes are a list of function pointers incremented through by
+ each button push. The power off mode simply selects an LEDFilter where all the lights are
+ turned off.
 
 ### Program Flow
-The program starts with the initialization of the hardware components mentioned above.
- Implementation details for these components are contained within their respective files.
+The program starts with the initialization of the hardware components: Ws2812b LEDs, ICM20649,
+ and the two buttons. Implementation details for these components are contained within their respective files.
 
 Following initialization, the main loop of the program executes, managing the LED
- filters and updating the LED patterns based on the collected data.
+ filters and updating the LED patterns based on data collected from the accelerometer.
 
-### Naming Conventions
+### Conventions
 - **Log Modules:** Use all uppercase for module names. Example: `LOG_MODULE(ICM_20649)`.
 - **Defines:** Avoid abbreviations.
+- **Errors:** Negative numbers are errors, 0 is a successful outcome. Use ´result´
+ as the variable name to indicate an error message is being returned.
 
 ### Deficiencies
 - The current documentation lacks detailed instructions on
  how to add new LED filters and what modifications are needed in other files.
+- the gyroscope ius not set up or integrated into the flow
 
 *===========================================================================*/
 
@@ -63,11 +68,17 @@ Following initialization, the main loop of the program executes, managing the LE
 
 LOG_MODULE(main)
 
-/* virtual_leds are transformed inside the program, and
- * then pushed to the actual leds */
+/* virtual_leds are an array that are transformed by LED filter,
+ * then transformed into a data buffer suitable to control the LEDs
+ * through the SPI, and then pushed inside the while loop. */
 uint8_t virtual_leds[NUM_PIXELS][3];
 uint8_t accel_data[3];
 
+/* the pointer inside the LEDFilter class, the base class
+ * for LEDFilters which transform motion data into LED patterns,
+ * is set to these variables, so the same data is available to
+ * the main program loop, as it is being manipulated inside of the
+ * LEDFilter. */
 uint8_t *LEDFilter::p_accel_data = accel_data;
 uint8_t (*LEDFilter::p_virtual_leds)[3] = virtual_leds;
 
@@ -99,7 +110,7 @@ int main(void) {
 
     while (1) {
         uint32_t ts = osKernelGetTickCount();
-
+        
         result = icm_20649_read_accel_data(accel_data);
         // LOG_DEBUG("Accelerometer data: X=%u, Y=%u, Z=%u\n", accel_data[0], accel_data[1], accel_data[2]);
         if (result == -1) {
@@ -108,12 +119,13 @@ int main(void) {
 
         call_current_led_filter();
         set_leds(virtual_leds, NUM_PIXELS);
-
         if(flag_toggle_system_power){
             toggle_power();
             flag_toggle_system_power = false;
         }
         update_leds();
+
+        /* What happens if I remove this delay? Why did I put this here in the first place? */
         osDelayUntil(ts+30);
     }
 };

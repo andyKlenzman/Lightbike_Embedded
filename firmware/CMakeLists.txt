@@ -35,7 +35,6 @@ if (USE_EMULATOR MATCHES OFF)
             src/leds/ws2812b.c
             src/drivers/icm20649.cpp
 
-            src/led_filters/LEDFilter.cpp
             src/led_filters/LEDFilter_Basic.cpp
             src/led_filters/LEDFilter_Smooth.cpp
             src/defines.h
@@ -64,7 +63,6 @@ if (USE_EMULATOR MATCHES ON)
             src/leds/ws2812b.c
             src/drivers/icm20649_emulator.cpp
 
-            src/led_filters/LEDFilter.cpp
             src/led_filters/LEDFilter_Basic.cpp
             src/led_filters/LEDFilter_Smooth.cpp
             src/defines.h
@@ -77,6 +75,7 @@ if (USE_EMULATOR MATCHES ON)
             src/led_filters/LEDFilter_Off.cpp
             src/utils/power_toggle.c
             src/led_filters/LEDFilter_Nice.cpp
+            src/led_filters/LEDFilter.h
     )
 endif ()
 

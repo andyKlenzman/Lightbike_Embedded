@@ -13,21 +13,19 @@
 
 LOG_MODULE(STATE_HANDLER)
 
-// Function declarations for handling different modes
-void handle_basic_mode();
-void handle_smooth_mode();
-void handle_nice_mode();
-
-void handle_off_mode();
+// Instances of LED filter objects
+LEDFilter_Smooth led_filter_smooth;
+LEDFilter_Basic led_filter_basic;
+LEDFilter_Nice led_filter_nice;
+LEDFilter_Off led_filter_off;
 
 // Enum to define different application states
 enum AppState {
     MODE_BASIC,    // Basic LED filter mode
     MODE_SMOOTH,   // Smooth LED filter mode
-    MODE_NICE,
-    MODE_OFF, // LED off mode
+    MODE_NICE,     // Nice LED filter mode
+    MODE_OFF,      // LED off mode
     MODE_MAX_VALUE // Total number of modes (used for array bounds)
-
 };
 
 // Global variable to keep track of the current state
@@ -36,56 +34,33 @@ volatile AppState current_state = MODE_BASIC;
 /**
  * @brief StateHandler is a function pointer type for handling different LED filter modes.
  */
-typedef void (*StateHandler)();
-
-// Array of function pointers for handling each mode
+typedef void (LEDFilter::*StateHandler)();
 StateHandler state_handlers[MODE_MAX_VALUE] = {
-        handle_basic_mode,   // Handler for MODE_BASIC
-        handle_smooth_mode,
-        handle_nice_mode,
-        handle_off_mode// Handler for MODE_SMOOTH
+        &LEDFilter::apply_filter,
+        &LEDFilter::apply_filter,
+        &LEDFilter::apply_filter,
+        &LEDFilter::apply_filter
 };
 
-// Instances of LED filter objects
-LEDFilter_Smooth led_filter_smooth;
-LEDFilter_Basic led_filter_basic;
-LEDFilter_Nice led_filter_nice;
-LEDFilter_Off led_filter_off;
-
-/**
- * @brief Handles the basic LED filter mode.
- */
-void handle_basic_mode() {
-    led_filter_basic.apply_filter();
-}
-
-/**
- * @brief Handles the smooth LED filter mode.
- */
-void handle_smooth_mode() {
-    led_filter_smooth.apply_filter();
-}
-
-void handle_nice_mode() {
-    led_filter_nice.apply_filter();
-}
-
-/**
- * @brief Handles the off mode (currently does nothing).
- */
-void handle_off_mode() {
-    led_filter_off.apply_filter();
-
-}
+// Array of LED filter objects corresponding to each state
+LEDFilter* led_filters[MODE_MAX_VALUE] = {
+        &led_filter_basic,
+        &led_filter_smooth,
+        &led_filter_nice,
+        &led_filter_off
+};
 
 /**
  * @brief Cycles to the next state in the sequence.
  *        Wraps around to MODE_BASIC after MODE_OFF.
  */
 void increment_state() {
-    current_state = static_cast<AppState>((current_state + 1) % MODE_OFF);
+    current_state = static_cast<AppState>((current_state + 1) % MODE_MAX_VALUE);
 }
 
+/**
+ * @brief Selects a specific state.
+ */
 void select_state(AppState desired_state) {
     current_state = desired_state;
 }
@@ -94,38 +69,5 @@ void select_state(AppState desired_state) {
  * @brief Calls the function associated with the current state.
  */
 void call_current_led_filter() {
-    state_handlers[current_state]();
-
+    (led_filters[current_state]->*state_handlers[current_state])();
 }
-
-/*
- * To add a new mode:
- * 1. Add a new entry to the AppState enum:
- *    enum AppState {
- *        MODE_BASIC,
- *        MODE_SMOOTH,
- *        MODE_OFF,
- *        MODE_NEW_MODE,  // Add new mode here
- *        MODE_MAX
- *    };
- *
- * 2. Declare and define a new function for the new mode:
- *    void handle_new_mode();
- *
- *    void handle_new_mode() {
- *        // Implement behavior for the new mode here
- *    }
- *
- * 3. Add the new function to the state_handlers array:
- *    StateHandler state_handlers[MODE_MAX] = {
- *        handle_basic_mode,
- *        handle_smooth_mode,
- *        handle_off_mode,
- *        handle_new_mode,  // Add new mode handler here
- *    };
- *
- * 4. Ensure select_next_state() correctly cycles through the new mode if needed:
- *    void increment_state() {
- *        current_state = static_cast<AppState>((current_state + 1) % MODE_MAX);
- *    }
- */
