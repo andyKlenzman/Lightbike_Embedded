@@ -129,8 +129,6 @@ int main(void) {
         }
 
 
-
-
         call_current_led_filter();
         set_leds(virtual_leds, NUM_PIXELS);
         if(flag_toggle_system_power){
