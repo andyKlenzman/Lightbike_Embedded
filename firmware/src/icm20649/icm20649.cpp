@@ -1,3 +1,31 @@
+
+
+
+/**
+ * @brief This file handles the functionality of the ICM, including reading and writing
+ * from the registers.
+ *
+ *
+ *
+ * There is more information on the exact purpose of the register writes in icm20649_defines.h
+ *
+ *
+ * deficiencies:
+ * The ICM read register function frequently fails. I have strategies to mend this, including
+ * using FSYNC and FIFO buffer to ensure data is ready to be read (though I am not totally
+ * sure what the bug is in the first place). However, I've determined that taking time on this problem
+ * is not as important, given that the data updates often enough to not interfere with the user experience.
+ *
+ * As a fix, I have simply kept the updates the same if the read fails three times in a row. This
+ * presents another problem when the MSB updates and the LSB does not for a single value, meaning
+ * that the combined value is coming from two separate readings. however, I have determined from tests
+ * that this does not interfere with the patterns appearing responsive, and will keep it as is for now.
+ *
+ * In the future, you could do work to address these expensive bad reads, possibly by implementing
+ * buffer reads, fsync, or a deeper probe into the ICM settings.
+ */
+
+
 #include "driver.h"
 #include "i2c.h"
 #include "icm20649_defines.h"
