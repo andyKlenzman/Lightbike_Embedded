@@ -151,8 +151,6 @@ int icm_20649_write_reg(uint8_t reg, uint8_t data) {
  */
 #define MAX_RETRIES 3
 
-#define MAX_RETRIES 3
-
 int icm_20649_read_accel_data(uint8_t accel_data[]) {
     uint8_t reg_addrs[6] = {
             ICM_20649_B0_ACCEL_XOUT_H,
