@@ -237,7 +237,7 @@ int icm_20649_read_accel_data(float accel_data[]) {
 
 uint8_t last_valid_gyro_vals[6] = {0}; // Array to store last valid values
 
-int icm_20649_read_gyro_data(uint8_t gyro_data[]) {
+int icm_20649_read_gyro_data(float gyro_data[]) {
     uint8_t reg_addrs[6] = {
             ICM_20649_B0_GYRO_XOUT_H,
             ICM_20649_B0_GYRO_XOUT_L,
@@ -247,24 +247,24 @@ int icm_20649_read_gyro_data(uint8_t gyro_data[]) {
             ICM_20649_B0_GYRO_ZOUT_L
     };
 
-    uint8_t gyro_vals[6];
+    uint8_t raw_gyro_vals[6];
 
     // Read values from registers
     for (int i = 0; i < 6; i++) {
         int retries = 0;
         while (retries < MAX_RETRIES) {
-            gyro_vals[i] = icm_20649_return_register_val(reg_addrs[i]);
-            if (gyro_vals[i] != (uint8_t)-1) {
-                LOG_DEBUG("icm_20649_read_gyro_data: Success reading register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
-                last_valid_gyro_vals[i] = gyro_vals[i]; // Update last valid value
+            raw_gyro_vals[i] = icm_20649_return_register_val(reg_addrs[i]);
+            if (raw_gyro_vals[i] != (uint8_t)-1) {
+                //LOG_DEBUG("icm_20649_read_gyro_data: Success reading register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
+                last_valid_gyro_vals[i] = raw_gyro_vals[i]; // Update last valid value
                 break; // Successful read
             }
             retries++;
-            LOG_DEBUG("icm_20649_read_gyro_data: Failed to read register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
+            //LOG_DEBUG("icm_20649_read_gyro_data: Failed to read register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
         }
         if (retries == MAX_RETRIES) {
-            LOG_DEBUG("icm_20649_read_gyro_data: Failed to read register 0x%02X (index %d) after %d attempts.", reg_addrs[i], i, MAX_RETRIES);
-            gyro_vals[i] = last_valid_gyro_vals[i]; // Use last valid value
+            //LOG_DEBUG("icm_20649_read_gyro_data: Failed to read register 0x%02X (index %d) after %d attempts.", reg_addrs[i], i, MAX_RETRIES);
+            raw_gyro_vals[i] = last_valid_gyro_vals[i]; // Use last valid value
         }
     }
 
@@ -273,8 +273,9 @@ int icm_20649_read_gyro_data(uint8_t gyro_data[]) {
     for (int i = 0; i < 3; i++) {
         int high_idx = 2 * i;
         int low_idx = 2 * i + 1;
-        if (gyro_vals[high_idx] != (uint8_t)-1 && gyro_vals[low_idx] != (uint8_t)-1) {
-            gyro_outs[i] = (float)combine_bytes(gyro_vals[high_idx], gyro_vals[low_idx]) / ICM_20649_GYRO_FS_SEL_3;
+        if (raw_gyro_vals[high_idx] != (uint8_t)-1 && raw_gyro_vals[low_idx] != (uint8_t)-1) {
+            int16_t combined_vals = combine_bytes(raw_gyro_vals[high_idx], raw_gyro_vals[low_idx]); //will it work without casting and simply with type naming??
+            gyro_outs[i] = (float) combined_vals / ICM_20649_GYRO_FS_SEL_3;
         } else {
             gyro_outs[i] = 0; // Default value in case of failure
             LOG_DEBUG("icm_20649_read_gyro_data: Using default value for axis %d due to read failure.", i);

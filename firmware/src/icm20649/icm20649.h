@@ -41,4 +41,4 @@ int icm_20649_read_accel_data(float accel_data[]);
  * @param gyro_data Array to store the data.
  * @return 0 on success, or a negative error code on failure.
  */
-int icm_20649_read_gyro_data(uint8_t gyro_data[]);
+int icm_20649_read_gyro_data(float gyro_data[]);
