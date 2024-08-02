@@ -34,7 +34,7 @@ int icm_20649_write_reg(uint8_t reg, uint8_t data);
  * @param accel_data Array to store the data.
  * @return 0 on success, or a negative error code on failure.
  */
-int icm_20649_read_accel_data(uint8_t accel_data[]);
+int icm_20649_read_accel_data(float accel_data[]);
 
 /**
  * @brief Reads gyroscope data.

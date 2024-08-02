@@ -72,7 +72,7 @@ LOG_MODULE(main)
  * then transformed into a data buffer suitable to control the LEDs
  * through the SPI, and then pushed inside the while loop. */
 uint8_t virtual_leds[NUM_PIXELS][3];
-uint8_t accel_data[3];
+float accel_data[3];
 uint8_t gyro_data[3];
 
 /* the pointer inside the LEDFilter class, the base class
@@ -80,7 +80,7 @@ uint8_t gyro_data[3];
  * is set to these variables, so the same data is available to
  * the main program loop, as it is being manipulated inside of the
  * LEDFilter. */
-uint8_t *LEDFilter::p_accel_data = accel_data;
+float *LEDFilter::p_accel_data = accel_data;
 uint8_t *LEDFilter::p_gyro_data = gyro_data;
 
 uint8_t (*LEDFilter::p_virtual_leds)[3] = virtual_leds;

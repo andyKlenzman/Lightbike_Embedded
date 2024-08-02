@@ -181,7 +181,7 @@ int icm_20649_write_reg(uint8_t reg, uint8_t data) {
 
 uint8_t last_valid_accel_vals[6] = {0}; // Array to store last valid values
 
-int icm_20649_read_accel_data(uint8_t accel_data[]) {
+int icm_20649_read_accel_data(float accel_data[]) {
     uint8_t reg_addrs[6] = {
             ICM_20649_B0_ACCEL_XOUT_H,
             ICM_20649_B0_ACCEL_XOUT_L,
@@ -191,24 +191,24 @@ int icm_20649_read_accel_data(uint8_t accel_data[]) {
             ICM_20649_B0_ACCEL_ZOUT_L
     };
 
-    uint8_t accel_vals[6];
+    uint8_t raw_accel_vals[6];
 
     // Read values from registers
     for (int i = 0; i < 6; i++) {
         int retries = 0;
         while (retries < MAX_RETRIES) {
-            accel_vals[i] = icm_20649_return_register_val(reg_addrs[i]);
-            if (accel_vals[i] != (uint8_t)-1) {
-                LOG_DEBUG("icm_20649_read_accel_data: Success reading register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
-                last_valid_accel_vals[i] = accel_vals[i]; // Update last valid value
+            raw_accel_vals[i] = icm_20649_return_register_val(reg_addrs[i]);
+            if (raw_accel_vals[i] != (uint8_t)-1) {
+                //LOG_DEBUG("icm_20649_read_accel_data: Success reading register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
+                last_valid_accel_vals[i] = raw_accel_vals[i]; // Update last valid value
                 break; // Successful read
             }
             retries++;
-            LOG_DEBUG("icm_20649_read_accel_data: Failed to read register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
+            //LOG_DEBUG("icm_20649_read_accel_data: Failed to read register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
         }
         if (retries == MAX_RETRIES) {
-            LOG_DEBUG("icm_20649_read_accel_data: Failed to read register 0x%02X (index %d) after %d attempts.", reg_addrs[i], i, MAX_RETRIES);
-            accel_vals[i] = last_valid_accel_vals[i]; // Use last valid value
+            //LOG_DEBUG("icm_20649_read_accel_data: Failed to read register 0x%02X (index %d) after %d attempts.", reg_addrs[i], i, MAX_RETRIES);
+            raw_accel_vals[i] = last_valid_accel_vals[i]; // Use last valid value
         }
     }
 
@@ -217,9 +217,9 @@ int icm_20649_read_accel_data(uint8_t accel_data[]) {
     for (int i = 0; i < 3; i++) {
         int high_idx = 2 * i;
         int low_idx = 2 * i + 1;
-        if (accel_vals[high_idx] != (uint8_t)-1 && accel_vals[low_idx] != (uint8_t)-1) {
-            accel_outs[i] = (float)combine_bytes(accel_vals[high_idx], accel_vals[low_idx]) / ACCEL_FS_8192_LSB_PER_G;
-            //accel_outs[i] = (float)combine_bytes(accel_vals[high_idx], accel_vals[low_idx]) / ACCEL_FS_1024_LSB_PER_G;
+        if (raw_accel_vals[high_idx] != (uint8_t)-1 && raw_accel_vals[low_idx] != (uint8_t)-1) {
+            int16_t combined_val = (int16_t)combine_bytes(raw_accel_vals[high_idx], raw_accel_vals[low_idx]);
+            accel_outs[i] = (float) combined_val / ACCEL_FS_1024_LSB_PER_G;
 
         } else {
             accel_outs[i] = 0; // Default value in case of failure

@@ -37,7 +37,7 @@ protected:
      * This static member points to an array containing acceleration data. Derived
      * classes can use this pointer to access or modify the acceleration data.
      */
-    static uint8_t* p_accel_data;
+    static float* p_accel_data;
 
     /**
      * @brief Pointer to the array of gyroscope data.
