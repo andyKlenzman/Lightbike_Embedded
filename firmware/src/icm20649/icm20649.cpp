@@ -179,6 +179,8 @@ int icm_20649_write_reg(uint8_t reg, uint8_t data) {
  */
 #define MAX_RETRIES 3
 
+uint8_t last_valid_accel_vals[6] = {0}; // Array to store last valid values
+
 int icm_20649_read_accel_data(uint8_t accel_data[]) {
     uint8_t reg_addrs[6] = {
             ICM_20649_B0_ACCEL_XOUT_H,
@@ -190,7 +192,6 @@ int icm_20649_read_accel_data(uint8_t accel_data[]) {
     };
 
     uint8_t accel_vals[6];
-    uint8_t last_valid_vals[6] = {0}; // Array to store last valid values
 
     // Read values from registers
     for (int i = 0; i < 6; i++) {
@@ -199,7 +200,7 @@ int icm_20649_read_accel_data(uint8_t accel_data[]) {
             accel_vals[i] = icm_20649_return_register_val(reg_addrs[i]);
             if (accel_vals[i] != (uint8_t)-1) {
                 LOG_DEBUG("icm_20649_read_accel_data: Success reading register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
-                last_valid_vals[i] = accel_vals[i]; // Update last valid value
+                last_valid_accel_vals[i] = accel_vals[i]; // Update last valid value
                 break; // Successful read
             }
             retries++;
@@ -207,7 +208,7 @@ int icm_20649_read_accel_data(uint8_t accel_data[]) {
         }
         if (retries == MAX_RETRIES) {
             LOG_DEBUG("icm_20649_read_accel_data: Failed to read register 0x%02X (index %d) after %d attempts.", reg_addrs[i], i, MAX_RETRIES);
-            accel_vals[i] = last_valid_vals[i]; // Use last valid value
+            accel_vals[i] = last_valid_accel_vals[i]; // Use last valid value
         }
     }
 
@@ -218,6 +219,8 @@ int icm_20649_read_accel_data(uint8_t accel_data[]) {
         int low_idx = 2 * i + 1;
         if (accel_vals[high_idx] != (uint8_t)-1 && accel_vals[low_idx] != (uint8_t)-1) {
             accel_outs[i] = (float)combine_bytes(accel_vals[high_idx], accel_vals[low_idx]) / ACCEL_FS_8192_LSB_PER_G;
+            //accel_outs[i] = (float)combine_bytes(accel_vals[high_idx], accel_vals[low_idx]) / ACCEL_FS_1024_LSB_PER_G;
+
         } else {
             accel_outs[i] = 0; // Default value in case of failure
             LOG_DEBUG("icm_20649_read_accel_data: Using default value for axis %d due to read failure.", i);
@@ -232,6 +235,7 @@ int icm_20649_read_accel_data(uint8_t accel_data[]) {
     return 0;
 }
 
+uint8_t last_valid_gyro_vals[6] = {0}; // Array to store last valid values
 
 int icm_20649_read_gyro_data(uint8_t gyro_data[]) {
     uint8_t reg_addrs[6] = {
@@ -244,7 +248,6 @@ int icm_20649_read_gyro_data(uint8_t gyro_data[]) {
     };
 
     uint8_t gyro_vals[6];
-    uint8_t last_valid_vals[6] = {0}; // Array to store last valid values
 
     // Read values from registers
     for (int i = 0; i < 6; i++) {
@@ -253,7 +256,7 @@ int icm_20649_read_gyro_data(uint8_t gyro_data[]) {
             gyro_vals[i] = icm_20649_return_register_val(reg_addrs[i]);
             if (gyro_vals[i] != (uint8_t)-1) {
                 LOG_DEBUG("icm_20649_read_gyro_data: Success reading register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
-                last_valid_vals[i] = gyro_vals[i]; // Update last valid value
+                last_valid_gyro_vals[i] = gyro_vals[i]; // Update last valid value
                 break; // Successful read
             }
             retries++;
@@ -261,7 +264,7 @@ int icm_20649_read_gyro_data(uint8_t gyro_data[]) {
         }
         if (retries == MAX_RETRIES) {
             LOG_DEBUG("icm_20649_read_gyro_data: Failed to read register 0x%02X (index %d) after %d attempts.", reg_addrs[i], i, MAX_RETRIES);
-            gyro_vals[i] = last_valid_vals[i]; // Use last valid value
+            gyro_vals[i] = last_valid_gyro_vals[i]; // Use last valid value
         }
     }
 
@@ -280,7 +283,7 @@ int icm_20649_read_gyro_data(uint8_t gyro_data[]) {
 
     // Map values to the output array
     for (int i = 0; i < 3; i++) {
-        LOG_DEBUG("Gyro output[%d]: %f", i, (float)gyro_outs[i]);
+        LOG_DEBUG("Gyro output[%d]: %d", i, gyro_outs[i]);
         gyro_data[i] = map_value(gyro_outs[i]);
     }
 

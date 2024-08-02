@@ -116,14 +116,14 @@ int main(void) {
 
 
         result = icm_20649_read_gyro_data(gyro_data);
-        // LOG_DEBUG("GYRO data: X=%u, Y=%u, Z=%u\n", gyro_data[0], gyro_data[1], gyro_data[2]);
+        LOG_DEBUG("GYRO data: X=%u, Y=%u, Z=%u\n", gyro_data[0], gyro_data[1], gyro_data[2]);
         if (result == -1) {
             LOG_ERROR("icm_20649_read_gyro_data failed.");
         }
 
 
         result = icm_20649_read_accel_data(accel_data);
-        // LOG_DEBUG("Accelerometer data: X=%u, Y=%u, Z=%u\n", accel_data[0], accel_data[1], accel_data[2]);
+        LOG_DEBUG("Accelerometer data: X=%u, Y=%u, Z=%u\n", accel_data[0], accel_data[1], accel_data[2]);
         if (result == -1) {
             LOG_ERROR("icm_20649_read_accel_data failed.");
         }
