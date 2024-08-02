@@ -1,52 +1,47 @@
-
-
-
 /**
- * @brief This file handles the functionality of the ICM, including reading and writing
+ * @file icm20649.cpp
+ * @brief This file handles the functionality of the ICM20649 sensor, including reading and writing
  * from the registers.
- *
- *
  *
  * There is more information on the exact purpose of the register writes in icm20649_defines.h
  *
+ * @details
+ * Deficiencies:
+ * The ICM read register function frequently fails. Strategies to mend this include using FSYNC and FIFO buffer
+ * to ensure data is ready to be read. However, I've determined that resolving this problem is not critical,
+ * given that data updates frequently enough to maintain a good user experience.
  *
- * deficiencies:
- * The ICM read register function frequently fails. I have strategies to mend this, including
- * using FSYNC and FIFO buffer to ensure data is ready to be read (though I am not totally
- * sure what the bug is in the first place). However, I've determined that taking time on this problem
- * is not as important, given that the data updates often enough to not interfere with the user experience.
+ * As a temporary fix, if a read fails three times in a row, the function will retain the last valid values.
+ * This approach can lead to situations where the MSB updates and the LSB does not, resulting in a combined value
+ * from two separate readings. However, tests show this does not significantly impact responsiveness.
  *
- * As a fix, I have simply kept the updates the same if the read fails three times in a row. This
- * presents another problem when the MSB updates and the LSB does not for a single value, meaning
- * that the combined value is coming from two separate readings. however, I have determined from tests
- * that this does not interfere with the patterns appearing responsive, and will keep it as is for now.
- *
- * In the future, you could do work to address these expensive bad reads, possibly by implementing
- * buffer reads, fsync, or a deeper probe into the ICM settings.
+ * Future work may involve addressing these issues, possibly by implementing buffer reads, FSYNC, or further
+ * investigation into the ICM settings.
  */
-
 
 #include "driver.h"
 #include "i2c.h"
 #include "icm20649_defines.h"
+#include "defines.h"
 #include "logging.h"
 #include "icm20649.h"
 #include <kernel.h>
 #include "utils/combine_bytes.h"
 #include "utils/map_value.h"
 
+
 LOG_MODULE(ICM_20649)
 
 #define READ_BUFFER_SIZE_BYTES  (1)
 #define WRITE_BUFFER_SIZE_BYTES (1)
 
+// Define DEBUG_PRINT_ICM20649 to enable debug messages in read functions
+
 static int i2c_device;
 static uint8_t *p_read_buffer;
 static uint8_t *p_write_buffer;
 
-
 uint32_t ts = osKernelGetTickCount();
-
 
 /**
  * @brief Initializes data buffers for communication with the ICM20649 sensor.
@@ -55,8 +50,7 @@ uint32_t ts = osKernelGetTickCount();
  * takes the sensor out of sleep mode, and initializes the accelerometer configuration.
  * It also restores the user bank to 0, which contains registers for reading sensor data.
  *
- * There is more information on the exact purpose of the register writes in icm20649_defines.h
- *
+ * More information on the exact purpose of the register writes is available in icm20649_defines.h
  *
  * @return 0 on success, -1 on failure.
  */
@@ -90,7 +84,7 @@ int icm_20649_init() {
         return -1;
     }
 
-    /* The program returns to register bank one, because all the data registers
+    /* The program returns to register bank 0, because all the data registers
      * for reading the accelerometer and gyroscope data are located there. */
     result = icm_20649_write_reg(ICM_20649_BX_REG_BANK_SEL, ICM_20649_REG_BANK_SEL_SETTINGS(0));
     if (result == -1) {
@@ -102,9 +96,9 @@ int icm_20649_init() {
 }
 
 /**
- * @brief Initializes the accelerometer of the ICM20649 sensor.
+ * @brief Initializes the accelerometer and gyroscope of the ICM20649 sensor.
  *
- * This function selects register bank 2 and sets the accelerometer configuration.
+ * This function selects register bank 2 and sets the accelerometer and gyroscope configuration.
  *
  * @return 0 on success, -1 on failure.
  */
@@ -112,21 +106,23 @@ int icm_20649_init_accel_and_gyro() {
     int result = icm_20649_write_reg(ICM_20649_BX_REG_BANK_SEL, ICM_20649_REG_BANK_SEL_SETTINGS(2)); // config to bank 2
     if (result == -1) {
         LOG_ERROR("Failed to select register bank 2 in icm config function.");
+        return -1;
     }
 
     result = icm_20649_write_reg(ICM_20649_B2_ACCEL_CONFIG, ICM_20649_B2_ACCEL_CONFIG_SETTINGS);
     if (result == -1) {
         LOG_ERROR("Failed to set accelerometer settings.");
+        return -1;
     }
 
     result = icm_20649_write_reg(ICM_20649_B2_GYRO_CONFIG_1, ICM_20649_B2_GYRO_CONFIG_1_SETTINGS);
     if (result == -1) {
         LOG_ERROR("Failed to set gyroscope settings.");
+        return -1;
     }
 
     return 0;
 }
-
 
 /**
  * @brief Reads data from a register of the ICM20649 sensor.
@@ -135,10 +131,8 @@ int icm_20649_init_accel_and_gyro() {
  * @return The value read from the register, or -1 on failure.
  */
 uint8_t icm_20649_return_register_val(uint8_t reg) {
-
-    // delay prevents bad reads...maybe
+    // Delay to prevent bad reads
     osDelayUntil(ts + 15);
-
 
     int result = i2c_read_reg(i2c_device, ICM_20649_DEVICE_ADDRESS, reg, p_read_buffer, READ_BUFFER_SIZE_BYTES);
     if (result == -1) {
@@ -177,8 +171,6 @@ int icm_20649_write_reg(uint8_t reg, uint8_t data) {
  * @param accel_data Array to store the accelerometer data.
  * @return 0 on success, -1 on failure.
  */
-#define MAX_RETRIES 3
-
 uint8_t last_valid_accel_vals[6] = {0}; // Array to store last valid values
 
 int icm_20649_read_accel_data(float accel_data[]) {
@@ -196,45 +188,52 @@ int icm_20649_read_accel_data(float accel_data[]) {
     // Read values from registers
     for (int i = 0; i < 6; i++) {
         int retries = 0;
-        while (retries < MAX_RETRIES) {
+        while (retries < MAX_REGISTER_READ_RETRIES) {
             raw_accel_vals[i] = icm_20649_return_register_val(reg_addrs[i]);
             if (raw_accel_vals[i] != (uint8_t)-1) {
-                //LOG_DEBUG("icm_20649_read_accel_data: Success reading register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
+#ifdef DEBUG_PRINT_ICM20649
+                LOG_DEBUG("icm_20649_read_accel_data: Success reading register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
+#endif
                 last_valid_accel_vals[i] = raw_accel_vals[i]; // Update last valid value
                 break; // Successful read
             }
             retries++;
-            //LOG_DEBUG("icm_20649_read_accel_data: Failed to read register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
+#ifdef DEBUG_PRINT_ICM20649
+            LOG_DEBUG("icm_20649_read_accel_data: Failed to read register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
+#endif
         }
-        if (retries == MAX_RETRIES) {
-            //LOG_DEBUG("icm_20649_read_accel_data: Failed to read register 0x%02X (index %d) after %d attempts.", reg_addrs[i], i, MAX_RETRIES);
+        if (retries == MAX_REGISTER_READ_RETRIES) {
+#ifdef DEBUG_PRINT_ICM20649
+            LOG_DEBUG("icm_20649_read_accel_data: Failed to read register 0x%02X (index %d) after %d attempts.", reg_addrs[i], i, MAX_REGISTER_READ_RETRIES);
+#endif
             raw_accel_vals[i] = last_valid_accel_vals[i]; // Use last valid value
         }
     }
 
     // Combine bytes and compute acceleration values
-    float accel_outs[3];
     for (int i = 0; i < 3; i++) {
         int high_idx = 2 * i;
         int low_idx = 2 * i + 1;
         if (raw_accel_vals[high_idx] != (uint8_t)-1 && raw_accel_vals[low_idx] != (uint8_t)-1) {
             int16_t combined_val = (int16_t)combine_bytes(raw_accel_vals[high_idx], raw_accel_vals[low_idx]);
-            accel_outs[i] = (float) combined_val / ACCEL_FS_1024_LSB_PER_G;
-
+            accel_data[i] = (float)combined_val / ACCEL_FS_1024_LSB_PER_G;
         } else {
-            accel_outs[i] = 0; // Default value in case of failure
+            accel_data[i] = 0; // Default value in case of failure
+#ifdef DEBUG_PRINT_ICM20649
             LOG_DEBUG("icm_20649_read_accel_data: Using default value for axis %d due to read failure.", i);
+#endif
         }
-    }
-
-    // Map values to the output array
-    for (int i = 0; i < 3; i++) {
-        accel_data[i] = map_value(accel_outs[i]);
     }
 
     return 0;
 }
 
+/**
+ * @brief Reads gyroscope data from the ICM20649 sensor.
+ *
+ * @param gyro_data Array to store the gyroscope data.
+ * @return 0 on success, -1 on failure.
+ */
 uint8_t last_valid_gyro_vals[6] = {0}; // Array to store last valid values
 
 int icm_20649_read_gyro_data(float gyro_data[]) {
@@ -252,40 +251,41 @@ int icm_20649_read_gyro_data(float gyro_data[]) {
     // Read values from registers
     for (int i = 0; i < 6; i++) {
         int retries = 0;
-        while (retries < MAX_RETRIES) {
+        while (retries < MAX_REGISTER_READ_RETRIES) {
             raw_gyro_vals[i] = icm_20649_return_register_val(reg_addrs[i]);
             if (raw_gyro_vals[i] != (uint8_t)-1) {
-                //LOG_DEBUG("icm_20649_read_gyro_data: Success reading register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
+#ifdef DEBUG_PRINT_ICM20649
+                LOG_DEBUG("icm_20649_read_gyro_data: Success reading register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
+#endif
                 last_valid_gyro_vals[i] = raw_gyro_vals[i]; // Update last valid value
                 break; // Successful read
             }
             retries++;
-            //LOG_DEBUG("icm_20649_read_gyro_data: Failed to read register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
+#ifdef DEBUG_PRINT_ICM20649
+            LOG_DEBUG("icm_20649_read_gyro_data: Failed to read register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
+#endif
         }
-        if (retries == MAX_RETRIES) {
-            //LOG_DEBUG("icm_20649_read_gyro_data: Failed to read register 0x%02X (index %d) after %d attempts.", reg_addrs[i], i, MAX_RETRIES);
+        if (retries == MAX_REGISTER_READ_RETRIES) {
+#ifdef DEBUG_PRINT_ICM20649
+            LOG_DEBUG("icm_20649_read_gyro_data: Failed to read register 0x%02X (index %d) after %d attempts.", reg_addrs[i], i, MAX_REGISTER_READ_RETRIES);
+#endif
             raw_gyro_vals[i] = last_valid_gyro_vals[i]; // Use last valid value
         }
     }
 
     // Combine bytes and compute gyro values
-    float gyro_outs[3];
     for (int i = 0; i < 3; i++) {
         int high_idx = 2 * i;
         int low_idx = 2 * i + 1;
         if (raw_gyro_vals[high_idx] != (uint8_t)-1 && raw_gyro_vals[low_idx] != (uint8_t)-1) {
-            int16_t combined_vals = combine_bytes(raw_gyro_vals[high_idx], raw_gyro_vals[low_idx]); //will it work without casting and simply with type naming??
-            gyro_outs[i] = (float) combined_vals / ICM_20649_GYRO_FS_SEL_3;
+            int16_t combined_vals = combine_bytes(raw_gyro_vals[high_idx], raw_gyro_vals[low_idx]);
+            gyro_data[i] = (float)combined_vals / ICM_20649_GYRO_FS_SEL_3;
         } else {
-            gyro_outs[i] = 0; // Default value in case of failure
+            gyro_data[i] = 0; // Default value in case of failure
+#ifdef DEBUG_PRINT_ICM20649
             LOG_DEBUG("icm_20649_read_gyro_data: Using default value for axis %d due to read failure.", i);
+#endif
         }
-    }
-
-    // Map values to the output array
-    for (int i = 0; i < 3; i++) {
-        LOG_DEBUG("Gyro output[%d]: %d", i, gyro_outs[i]);
-        gyro_data[i] = map_value(gyro_outs[i]);
     }
 
     return 0;

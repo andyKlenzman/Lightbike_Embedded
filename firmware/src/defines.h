@@ -22,6 +22,10 @@
 #pragma once
 
 #define NUM_PIXELS (50)
+#define MAX_REGISTER_READ_RETRIES (50)
+#define DEBUG_PRINT_ICM20649 // uncomment to enable debug statements
+
+
 
 #define GPIO_PUSH_BTN_1 (100) //PB00
 #define GPIO_PUSH_BTN_2 (101) //PB01
