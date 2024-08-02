@@ -40,7 +40,7 @@ endif ()
             src/state_handler/state_handler.cpp
             src/buttons/buttons.h
             src/utils/power_toggle.c
-            src/led_filters/LEDFilter_Nice.cpp
+            src/led_filters/LEDFilter_Wave.cpp
     )
 
 add_executable(Lightbike ${LIGHTBIKE_FILES})

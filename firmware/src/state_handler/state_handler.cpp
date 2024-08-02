@@ -17,7 +17,7 @@ LOG_MODULE(STATE_HANDLER)
 // Instances of LED filter objects
 LEDFilter_Smooth led_filter_smooth;
 LEDFilter_Basic led_filter_basic;
-LEDFilter_Nice led_filter_nice;
+LEDFilter_Wave led_filter_wave;
 LEDFilter_Off led_filter_off;
 
 // Global variable to keep track of the current state
@@ -27,7 +27,7 @@ volatile AppState current_state = MODE_BASIC;
 LEDFilter* led_filters[MODE_MAX_VALUE] = {
         &led_filter_basic,
         &led_filter_smooth,
-        &led_filter_nice,
+        &led_filter_wave,
         &led_filter_off
 };
 

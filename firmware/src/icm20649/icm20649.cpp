@@ -27,7 +27,6 @@
 #include "icm20649.h"
 #include <kernel.h>
 #include "utils/combine_bytes.h"
-#include "utils/map_value.h"
 
 
 LOG_MODULE(ICM_20649)

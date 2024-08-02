@@ -46,6 +46,9 @@ protected:
      * classes can use this pointer to access or modify the gyroscope data.
      */
     static float* p_gyro_data;
+    static uint8_t * p_mapped_accel_data;
+    static uint8_t* p_mapped_gyro_data;
+
 
     /**
      * @brief Pointer to the array of virtual LED data.
