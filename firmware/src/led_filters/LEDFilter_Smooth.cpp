@@ -8,7 +8,7 @@ class LEDFilter_Smooth : public LEDFilter {
 public:
     LEDFilter_Smooth() {
         // Initialize dots with positions, speeds, and colors
-        for (int i = 0; i < DOT_COUNT; ++i) {
+        for (int i = 0; i < dot_count; ++i) {
             dots[i].position = static_cast<float>(i * 20);
             dots[i].speed = 0.1f * (i + 1);
             dots[i].color[0] = 20; // Red
@@ -17,11 +17,11 @@ public:
             dots[i].direction = 1; // 1 for forward, -1 for backward
         }
         // Initialize color changes
-        for (int i = 0; i < DOT_COUNT; ++i) {
+        for (int i = 0; i < dot_count; ++i) {
             dots[i].color_target[0] = 255;
             dots[i].color_target[1] = 255;
             dots[i].color_target[2] = 255;
-            dots[i].color_speed = 0.01f; // Smooth color transition speed
+            dots[i].color_speed = 0.001f; // Smooth color transition speed
         }
     }
 
@@ -35,7 +35,7 @@ public:
 
         // Draw dots with fading tails
         for (int i = 0; i < NUM_PIXELS; ++i) {
-            for (int d = 0; d < DOT_COUNT; ++d) {
+            for (int d = 0; d < dot_count; ++d) {
                 float pos = dots[d].position;
                 float distance = fabs(i - pos);
                 if (distance < TAIL_LENGTH) {
@@ -49,8 +49,10 @@ public:
     }
 
 private:
-    static constexpr int DOT_COUNT = 3;     // Number of dots
-    static constexpr float TAIL_LENGTH = 5.0f; // Length of the fading tail
+    static const int dot_count = 3;     // Number of dots
+    float TAIL_LENGTH = 5.0f; // Length of the fading tail
+
+
 
     struct Dot {
         float position; // Position on the strip (0 to NUM_PIXELS-1)
@@ -61,18 +63,20 @@ private:
         float color_speed; // Speed of color transition
     };
 
-    Dot dots[DOT_COUNT]; // Array to hold dots
+    Dot dots[dot_count]; // Array to hold dots
+
+
 
     // Function to update dot positions
     void update_dots() {
-        for (int d = 0; d < DOT_COUNT; ++d) {
+        for (int d = 0; d < dot_count; ++d) {
             dots[d].position += dots[d].speed * dots[d].direction;
             if (dots[d].position >= NUM_PIXELS || dots[d].position < 0) {
                 dots[d].direction *= -1; // Reverse direction when reaching limits
                 // Optional: change color target randomly
-                dots[d].color_target[0] = static_cast<uint8_t>(rand() % 256);
-                dots[d].color_target[1] = static_cast<uint8_t>(rand() % 256);
-                dots[d].color_target[2] = static_cast<uint8_t>(rand() % 256);
+//                dots[d].color_target[0] = static_cast<uint8_t>(rand() % 256);
+//                dots[d].color_target[1] = static_cast<uint8_t>(rand() % 256);
+//                dots[d].color_target[2] = static_cast<uint8_t>(rand() % 256);
             }
         }
     }
@@ -80,7 +84,7 @@ private:
     // Function to update dot colors
     // Function to update dot colors
     void update_colors() {
-        for (int d = 0; d < DOT_COUNT; ++d) {
+        for (int d = 0; d < dot_count; ++d) {
             for (int c = 0; c < 3; ++c) {
                 uint8_t current_color = dots[d].color[c];
                 uint8_t target_color = dots[d].color_target[c];

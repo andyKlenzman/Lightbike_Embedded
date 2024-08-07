@@ -34,13 +34,13 @@ endif ()
 
             src/led_filters/LEDFilter_Basic.cpp
             src/led_filters/LEDFilter_Smooth.cpp
-            src/defines.h
-            src/buttons/buttons.cpp
             src/globals.h
+            src/buttons/buttons.cpp
             src/state_handler/state_handler.cpp
             src/buttons/buttons.h
             src/utils/power_toggle.c
             src/led_filters/LEDFilter_Wave.cpp
+            src/led_filters/LEDFilter_BikeWheel.cpp
     )
 
 add_executable(Lightbike ${LIGHTBIKE_FILES})

@@ -63,18 +63,3 @@ int button_init(uint32_t gpio_pin, gpio_irq_cb_t irq_handler) {
 
     return 0;  // Return success if all operations succeed
 }
-
-/*
- * To configure a new button:
- * 1. Define an IRQ handler function for the button.
- *    For example:
- *    void new_button_irq_function() {
- *        // Implement button-specific functionality here
- *    }
- *
- * 2. Initialize the button with the appropriate GPIO pin and IRQ handler:
- *    int result = button_init(GPIO_PIN_NUMBER, new_button_irq_function);
- *
- *    Replace GPIO_PIN_NUMBER with the actual pin number and
- *    new_button_irq_function with your handler function.
- */

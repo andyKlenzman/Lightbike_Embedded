@@ -8,7 +8,7 @@
  */
 
 #include <sysconfig.h>
-#include "defines.h"
+#include "globals.h"
 
 
 sysconf_use_driver(spi_gecko)

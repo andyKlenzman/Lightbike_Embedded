@@ -1,10 +1,11 @@
 #pragma once
 
-// Enum to define different application states
+// Enum to define different application states.
 typedef enum {
     MODE_BASIC,
     MODE_SMOOTH,
     MODE_NICE,
+    MODE_BIKE_WHEEL,
     MODE_OFF,
     MODE_MAX_VALUE
 } AppState;

@@ -15,7 +15,7 @@
 #include "ws2812b.h"
 #include "logging.h"
 #include "gpio.h"
-#include "defines.h"
+#include "globals.h"
 
 
 #define LED_DATA_PACKET_SIZE  (9)

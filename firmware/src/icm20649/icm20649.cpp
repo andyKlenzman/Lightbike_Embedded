@@ -22,7 +22,7 @@
 #include "driver.h"
 #include "i2c.h"
 #include "icm20649_defines.h"
-#include "defines.h"
+#include "globals.h"
 #include "logging.h"
 #include "icm20649.h"
 #include <kernel.h>

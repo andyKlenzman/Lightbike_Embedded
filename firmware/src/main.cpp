@@ -1,34 +1,13 @@
-/*=============================================================================
-Project:  Lightbike
-Author:   Andy Klenzman (ak@imagineon.de)
-Description:
-
-Lightbike enhances bicycle visibility and aesthetics through motion-responsive
-LED patterns using motion-powered LEDs mounted on bike spokes. The system is
-controlled by the EFR32MG24 MCU, with motion data collected via the ICM20649
-sensor and LEDs controlled by WS2812s through SPI and level shifting.
-
-Conventions:
-- **Log Modules:** Use all uppercase for module names.
-- **Defines:** Avoid abbreviations.
-- **Errors:** Negative numbers are errors, 0 indicates success.
-
-Deficiencies:
-- Detailed instructions for adding new LED filters are missing.
-- Gyroscope data integration is incomplete.
-
-*===========================================================================*/
-
 #include <kernel.h>
 #include "logging.h"
-#include "defines.h"
 #include "globals.h"
 #include "ws2812b/ws2812b.h"
 #include "icm20649/icm20649.h"
 #include "buttons/buttons.h"
 #include "state_handler/state_handler.h"
 #include "utils/power_toggle.c"
-#include "utils/map_value.h" // Assuming this header contains the MapMode enum and map_value function
+#include "utils/map_value.h"
+#include "led_filters/LEDFilter.h"
 
 LOG_MODULE(main)
 
@@ -49,8 +28,6 @@ uint8_t (*LEDFilter::p_virtual_leds)[3] = virtual_leds;
 /* Power toggle flag */
 volatile bool flag_toggle_system_power = false;
 
-/* Mapping mode (set as needed) */
-#define MAPPING_MODE MAP_MODE_UNSIGNED
 
 int main(void) {
     int result;
@@ -98,8 +75,8 @@ int main(void) {
 
         /* Map sensor data to appropriate ranges */
         for (int i = 0; i < 3; i++) {
-            mapped_accel_data[i] = map_value(accel_data[i], -2.0f, 2.0f, 0.0f, 255.0f, MAPPING_MODE);
-            mapped_gyro_data[i] = map_value(gyro_data[i], -30.0f, 30.0f, 0.0f, 255.0f, MAPPING_MODE);
+            mapped_accel_data[i] = map_value(accel_data[i], ACCEL_MAP_IN_MIN, ACCEL_MAP_IN_MAX, ACCEL_MAP_OUT_MIN, ACCEL_MAP_OUT_MAX, MAPPING_MODE);
+            mapped_gyro_data[i] = map_value(gyro_data[i], GYRO_MAP_IN_MIN, GYRO_MAP_IN_MAX, GYRO_MAP_OUT_MAX, GYRO_MAP_OUT_MIN, MAPPING_MODE);
         }
 
         /* Update LEDs based on current filter */

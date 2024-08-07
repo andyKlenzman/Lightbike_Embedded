@@ -3,7 +3,13 @@
 
 class LEDFilter_Wave : public LEDFilter {
 public:
-    LEDFilter_Wave() {
+    LEDFilter_Wave(float smoothing_factor,
+                   float wave_frequency_factor,
+                   float wave_amplitude_factor)
+            : smoothing_factor(smoothing_factor),
+            wave_frequency_factor(wave_frequency_factor),
+            wave_amplitude_factor(wave_amplitude_factor) {
+
         // Initialize smooth values and wave position
         for (int i = 0; i < 3; i++) {
             smooth_values_accel[i] = 0;
@@ -15,13 +21,13 @@ public:
     void apply_filter() override {
         // Smoothly update smooth_values based on accelerometer and gyroscope data
         for (int i = 0; i < 3; i++) {
-            smooth_values_accel[i] = (smooth_values_accel[i] * SMOOTHING_FACTOR + p_mapped_accel_data[i]) / (SMOOTHING_FACTOR + 1);
-            smooth_values_gyro[i] = (smooth_values_gyro[i] * SMOOTHING_FACTOR + p_mapped_gyro_data[i]) / (SMOOTHING_FACTOR + 1);
+            smooth_values_accel[i] = (smooth_values_accel[i] * smoothing_factor + p_mapped_accel_data[i]) / (smoothing_factor + 1);
+            smooth_values_gyro[i] = (smooth_values_gyro[i] * smoothing_factor + p_mapped_gyro_data[i]) / (smoothing_factor + 1);
         }
 
         // Calculate wave frequency and amplitude based on smoothed sensor data
-        float wave_frequency = (smooth_values_gyro[0] + smooth_values_gyro[1] + smooth_values_gyro[2]) / 3.0f * WAVE_FREQUENCY_FACTOR;
-        float wave_amplitude = (smooth_values_accel[0] + smooth_values_accel[1] + smooth_values_accel[2]) / 3.0f * WAVE_AMPLITUDE_FACTOR;
+        float wave_frequency = (smooth_values_gyro[0] + smooth_values_gyro[1] + smooth_values_gyro[2]) / 3.0f * wave_frequency_factor;
+        float wave_amplitude = (smooth_values_accel[0] + smooth_values_accel[1] + smooth_values_accel[2]) / 3.0f * wave_amplitude_factor;
 
         // Update the wave position
         wave_position += wave_frequency;
@@ -47,9 +53,9 @@ public:
     }
 
 private:
-    static constexpr float SMOOTHING_FACTOR = 3.9;      // Smoothing factor for sensor data
-    static constexpr float WAVE_FREQUENCY_FACTOR = 0.005; // Frequency factor for wave movement
-    static constexpr float WAVE_AMPLITUDE_FACTOR = 0.003; // Amplitude factor for wave intensity
+    float smoothing_factor;      // Smoothing factor for sensor data
+    float wave_frequency_factor; // Frequency factor for wave movement
+    float wave_amplitude_factor; // Amplitude factor for wave intensity
 
     uint8_t smooth_values_accel[3]; // Smoothed acceleration data
     uint8_t smooth_values_gyro[3];  // Smoothed gyroscope data

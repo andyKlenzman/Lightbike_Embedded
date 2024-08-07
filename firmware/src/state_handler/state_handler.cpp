@@ -8,17 +8,29 @@
  */
 
 #pragma once
-#include "globals.h"
 #include "logging.h"
 #include "state_handler.h"
+#include "globals.h"
+#include "led_filters/LEDFilter.h"
+#include "led_filters/LEDFilter_Basic.cpp"
+#include "led_filters/LEDFilter_Smooth.cpp"
+#include "led_filters/LEDFilter_Off.cpp"
+#include "led_filters/LEDFilter_Wave.cpp"
+#include "led_filters/LEDFilter_BikeWheel.cpp"
+
 
 LOG_MODULE(STATE_HANDLER)
 
 // Instances of LED filter objects
 LEDFilter_Smooth led_filter_smooth;
-LEDFilter_Basic led_filter_basic;
-LEDFilter_Wave led_filter_wave;
+LEDFilter_Basic led_filter_basic(FILTER_BASIC_SMOOTHING);
+LEDFilter_Wave led_filter_wave(FILTER_WAVE_SMOOTHING,
+                               FILTER_WAVE_FREQUENCY,
+                               FILTER_WAVE_AMPLITUDE);
 LEDFilter_Off led_filter_off;
+LEDFilter_BicycleWheel led_filter_bike_wheel(FILTER_WAVE_SMOOTHING,
+                                             FILTER_WAVE_FREQUENCY,
+                                             FILTER_WAVE_AMPLITUDE);
 
 // Global variable to keep track of the current state
 volatile AppState current_state = MODE_BASIC;
@@ -28,6 +40,7 @@ LEDFilter* led_filters[MODE_MAX_VALUE] = {
         &led_filter_basic,
         &led_filter_smooth,
         &led_filter_wave,
+        &led_filter_bike_wheel,
         &led_filter_off
 };
 

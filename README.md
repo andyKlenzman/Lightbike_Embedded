@@ -7,6 +7,8 @@ Motion-Responsive LED Patterns: LED patterns change based on motion detected by 
 Customizable LED Filters: Various filters can be applied to create different visual effects.
 Power Management: Controlled by toggling the system power based on flags.
 
+## Edit a filter
+Filters are initalized in state handlers 
 
 ## Conventions
 Log Modules: Use all uppercase for module names.

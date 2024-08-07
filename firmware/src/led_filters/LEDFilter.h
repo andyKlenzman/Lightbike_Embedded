@@ -2,7 +2,7 @@
 
 #include "icm20649/icm20649.h"
 #include "ws2812b/ws2812b.h"
-#include "defines.h"
+#include "globals.h"
 
 /**
  * @brief Abstract base class for LED filters.
@@ -31,6 +31,7 @@ public:
     virtual void apply_filter() = 0;
 
 protected:
+
     /**
      * @brief Pointer to the array of acceleration data.
      *
