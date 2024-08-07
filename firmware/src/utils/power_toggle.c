@@ -1,19 +1,11 @@
 #include <stdbool.h>
-#include "filter_handler//filter_handler.h"
-
-
+#include "globals.h"
 
 void toggle_power(){
-    static bool power_on = true;
-
-    if(power_on){
-        select_state(MODE_OFF);
+    if(is_system_on){
+        is_system_on = false;
 
     } else {
-        select_state(MODE_BASIC);
+        is_system_on = true;
     }
-    power_on = !power_on;
-
-
-
 }

@@ -24,6 +24,8 @@
 
 
 extern volatile bool flag_toggle_system_power;  // Flag variable to signal events
+extern volatile bool is_system_on;
+
 
 
 #define NUM_PIXELS (50)

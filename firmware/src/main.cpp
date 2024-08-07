@@ -27,6 +27,7 @@ uint8_t (*LEDFilter::p_virtual_leds)[3] = virtual_leds;
 
 /* Power toggle flag */
 volatile bool flag_toggle_system_power = false;
+volatile bool is_system_on = true;
 
 
 int main(void) {
@@ -58,36 +59,42 @@ int main(void) {
     }
 
     while (1) {
-        uint32_t ts = osKernelGetTickCount();
+        // uint32_t ts = osKernelGetTickCount();
+        if (!is_system_on){
 
-        /* Read sensor data */
-        if ((result = icm_20649_read_gyro_data(gyro_data)) == -1) {
-            LOG_ERROR("icm_20649_read_gyro_data failed.");
-        } else {
-            LOG_DEBUG("GYRO data: X=%f, Y=%f, Z=%f\n", gyro_data[0], gyro_data[1], gyro_data[2]);
+            /* Read sensor data */
+            if ((result = icm_20649_read_gyro_data(gyro_data)) == -1) {
+                LOG_ERROR("icm_20649_read_gyro_data failed.");
+            } else {
+                LOG_DEBUG("GYRO data: X=%f, Y=%f, Z=%f\n", gyro_data[0], gyro_data[1], gyro_data[2]);
+            }
+
+            if ((result = icm_20649_read_accel_data(accel_data)) == -1) {
+                LOG_ERROR("icm_20649_read_accel_data failed.");
+            } else {
+                LOG_DEBUG("Accelerometer data: X=%f, Y=%f, Z=%f\n", accel_data[0], accel_data[1], accel_data[2]);
+            }
+
+            /* Map sensor data to appropriate ranges */
+            for (int i = 0; i < 3; i++) {
+                mapped_accel_data[i] = map_value(accel_data[i], ACCEL_MAP_IN_MIN, ACCEL_MAP_IN_MAX, ACCEL_MAP_OUT_MIN, ACCEL_MAP_OUT_MAX, MAPPING_MODE);
+                mapped_gyro_data[i] = map_value(gyro_data[i], GYRO_MAP_IN_MIN, GYRO_MAP_IN_MAX, GYRO_MAP_OUT_MAX, GYRO_MAP_OUT_MIN, MAPPING_MODE);
+            }
+
+            /* Update LEDs based on current filter */
+            call_current_led_filter();
+            set_leds(virtual_leds);
+            update_leds();
+
         }
 
-        if ((result = icm_20649_read_accel_data(accel_data)) == -1) {
-            LOG_ERROR("icm_20649_read_accel_data failed.");
-        } else {
-            LOG_DEBUG("Accelerometer data: X=%f, Y=%f, Z=%f\n", accel_data[0], accel_data[1], accel_data[2]);
-        }
-
-        /* Map sensor data to appropriate ranges */
-        for (int i = 0; i < 3; i++) {
-            mapped_accel_data[i] = map_value(accel_data[i], ACCEL_MAP_IN_MIN, ACCEL_MAP_IN_MAX, ACCEL_MAP_OUT_MIN, ACCEL_MAP_OUT_MAX, MAPPING_MODE);
-            mapped_gyro_data[i] = map_value(gyro_data[i], GYRO_MAP_IN_MIN, GYRO_MAP_IN_MAX, GYRO_MAP_OUT_MAX, GYRO_MAP_OUT_MIN, MAPPING_MODE);
-        }
-
-        /* Update LEDs based on current filter */
-        call_current_led_filter();
-        set_leds(virtual_leds, NUM_PIXELS);
-        update_leds();
-
-        /* Toggle system power if flag is set */
+        /* Toggle system power and clear LEDs if flag is set */
         if (flag_toggle_system_power) {
             toggle_power();
             flag_toggle_system_power = false;
+            clear_leds(virtual_leds);
+            update_leds();
+
         }
 
 

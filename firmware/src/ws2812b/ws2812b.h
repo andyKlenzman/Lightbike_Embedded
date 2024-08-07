@@ -20,7 +20,8 @@ int  led_strip_set_led(uint16_t index, uint8_t red, uint8_t green, uint8_t blue)
 int  led_strip_get_num_pixels();
 void update_leds();
 void led_strip_select (int strip);
-void set_leds(uint8_t (*virtual_leds)[3], int num_pixels);
+void set_leds(uint8_t (*virtual_leds)[3]);
+void clear_leds(uint8_t (*virtual_leds)[3]);
 
 
 #if defined (__cplusplus)

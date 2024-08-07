@@ -181,8 +181,17 @@ int led_strip_get_num_pixels() {
 }
 
 
-void set_leds(uint8_t (*virtual_leds)[3], int num_pixels){
+void set_leds(uint8_t (*virtual_leds)[3]){
     for (int i = 0; i < NUM_PIXELS; i++) {
         led_strip_set_led(i, virtual_leds[i][0], virtual_leds[i][1], virtual_leds[i][2]);
     }
+}
+
+void clear_leds(uint8_t (*virtual_leds)[3]){
+    for (int i = 0; i < NUM_PIXELS; i++) {
+        virtual_leds[i][0] = 0;
+        virtual_leds[i][1] = 0;
+        virtual_leds[i][2] = 0;
+    }
+    set_leds(virtual_leds);
 }

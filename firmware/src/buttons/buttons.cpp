@@ -13,6 +13,7 @@ LOG_MODULE(button_interrupt)
  * It rotates through different application states, changing the LED filter mode.
  */
 void mode_button_irq_function() {
+    
     increment_state();  // Move to the next state
 }
 
