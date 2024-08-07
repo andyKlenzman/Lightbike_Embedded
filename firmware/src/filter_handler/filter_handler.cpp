@@ -1,5 +1,5 @@
 /*
- * File: state_handler.cpp
+ * File: filter_handler.cpp
  * Author: Andrew Klenzman
  * Description:
  * Contains functionality for changing the state of the device,
@@ -9,7 +9,7 @@
 
 #pragma once
 #include "logging.h"
-#include "state_handler.h"
+#include "filter_handler.h"
 #include "globals.h"
 #include "led_filters/LEDFilter.h"
 #include "led_filters/LEDFilter_Basic.cpp"
@@ -27,10 +27,8 @@ LEDFilter_Basic led_filter_basic(FILTER_BASIC_SMOOTHING);
 LEDFilter_Wave led_filter_wave(FILTER_WAVE_SMOOTHING,
                                FILTER_WAVE_FREQUENCY,
                                FILTER_WAVE_AMPLITUDE);
+LEDFilter_BicycleWheel led_filter_bike_wheel;
 LEDFilter_Off led_filter_off;
-LEDFilter_BicycleWheel led_filter_bike_wheel(FILTER_WAVE_SMOOTHING,
-                                             FILTER_WAVE_FREQUENCY,
-                                             FILTER_WAVE_AMPLITUDE);
 
 // Global variable to keep track of the current state
 volatile AppState current_state = MODE_BASIC;

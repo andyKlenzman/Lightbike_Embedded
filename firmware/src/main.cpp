@@ -4,7 +4,7 @@
 #include "ws2812b/ws2812b.h"
 #include "icm20649/icm20649.h"
 #include "buttons/buttons.h"
-#include "state_handler/state_handler.h"
+#include "filter_handler/filter_handler.h"
 #include "utils/power_toggle.c"
 #include "utils/map_value.h"
 #include "led_filters/LEDFilter.h"

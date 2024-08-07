@@ -36,7 +36,7 @@ endif ()
             src/led_filters/LEDFilter_Smooth.cpp
             src/globals.h
             src/buttons/buttons.cpp
-            src/state_handler/state_handler.cpp
+            src/filter_handler/filter_handler.cpp
             src/buttons/buttons.h
             src/utils/power_toggle.c
             src/led_filters/LEDFilter_Wave.cpp
