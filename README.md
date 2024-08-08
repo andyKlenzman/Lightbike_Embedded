@@ -5,4 +5,5 @@ Lightbike enhances bicycle visibility and aesthetics through motion-responsive L
 ## Contact
 
 Author: Andy Klenzman
+
 Email: ak@imagineon.de
