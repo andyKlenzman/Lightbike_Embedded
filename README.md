@@ -1,26 +1,6 @@
 # Lightbike
 Project Overview
-Lightbike enhances bicycle visibility and aesthetics through motion-responsive LED patterns. The system employs motion-powered LEDs mounted on bike spokes, controlled by the EFR32MG24 MCU. Motion data is collected via the ICM20649 sensor, and LEDs are driven by WS2812s using SPI and level shifting.
-
-## Features
-Motion-Responsive LED Patterns: LED patterns change based on motion detected by the ICM20649 sensor.
-Customizable LED Filters: Various filters can be applied to create different visual effects.
-Power Management: Controlled by toggling the system power based on flags.
-
-## Edit a filter
-Filters are initalized in state handlers 
-
-## Conventions
-Log Modules: Use all uppercase for module names.
-
-Defines: Avoid abbreviations.
-
-Errors: Negative numbers indicate errors; 0 indicates success.
-
-## Deficiencies
-LED Filters Documentation: Detailed instructions for adding new LED filters are currently missing.
-
-
+Lightbike enhances bicycle visibility and aesthetics through motion-responsive LED patterns. The system employs a ICM20649 accelerometer and gyroscope and an EFR32MG24 MCU mounted on both of a bike axises, with connect WS2812b LEDs wound through the spokes. Motion data is collected via the ICM20649 sensor, and LEDs are driven by using SPI. There are two buttons to power off the device and switch through various filter modes.
 
 ## Contact
 Author: Andy Klenzman
