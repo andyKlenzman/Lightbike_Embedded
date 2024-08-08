@@ -51,20 +51,13 @@ extern volatile bool is_system_on;
 
 
 /* LEDFilter Defines */
-#define FILTER_WAVE_SMOOTHING (4.9)
-#define FILTER_WAVE_FREQUENCY (0.005)
-#define FILTER_WAVE_AMPLITUDE (0.005)
+/* General Settings*/
+#define FILTER_SMOOTHING_FACTOR (47.9)
 
-#define FILTER_BASIC_SMOOTHING (20.0)
+/* Sensor mapping settings*/
 
-/*
- * MAP_MODE_SIGNED,         // 0 is the middle value, with equal positive and negative ranges
-    MAP_MODE_UNSIGNED,       // 0 is the minimum value, with output increasing for positive inputs only
-    MAP_MODE_SYMMETRICAL
- * */
-#define MAPPING_MODE (MAP_MODE_SYMMETRICAL)
-#define ACCEL_MAP_IN_MAX (3)
-#define ACCEL_MAP_IN_MIN (-3)
+#define ACCEL_MAP_IN_MAX (2)
+#define ACCEL_MAP_IN_MIN (-2)
 
 #define ACCEL_MAP_OUT_MAX (255)
 #define ACCEL_MAP_OUT_MIN (0)
@@ -74,6 +67,32 @@ extern volatile bool is_system_on;
 
 #define GYRO_MAP_OUT_MAX (0)
 #define GYRO_MAP_OUT_MIN (255)
+
+/*
+ * MAP_MODE_SIGNED,         // 0 is the middle value, with equal positive and negative ranges
+    MAP_MODE_UNSIGNED,       // 0 is the minimum value, with output increasing for positive inputs only
+    MAP_MODE_SYMMETRICAL
+ * */
+
+#define MAPPING_MODE (MAP_MODE_SYMMETRICAL)
+
+/* LEDFilter_Wave settings*/
+#define FILTER_WAVE_SMOOTHING (4.9)
+#define FILTER_WAVE_FREQUENCY (0.005)
+#define FILTER_WAVE_AMPLITUDE (0.005)
+
+/* LEDFilter_Star settings*/
+#define FILTER_STAR_FREQUENCY_FACTOR (.001)
+#define FILTER_STAR_FADE_SPEED (4)
+
+#define FRAME_TIME_MS (17)
+
+
+
+
+
+
+
 
 
 

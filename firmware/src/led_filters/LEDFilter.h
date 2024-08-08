@@ -10,6 +10,11 @@
  * The `LEDFilter` class serves as an abstract base class for implementing various
  * filters that can be applied to LED data. It provides a common interface for
  * applying filters, which derived classes must implement.
+ *
+ * This file shows the values that are available to each filter, supporting easy and
+ * consistent Filter development experience, and controlling memory usage by constriciting
+ *  each filter to access the same addresses.
+ *
  */
 class LEDFilter {
 public:
@@ -39,16 +44,16 @@ protected:
      * classes can use this pointer to access or modify the acceleration data.
      */
     static float* p_accel_data;
-
-    /**
-     * @brief Pointer to the array of gyroscope data.
-     *
-     * This static member points to an array containing gyroscope data. Derived
-     * classes can use this pointer to access or modify the gyroscope data.
-     */
     static float* p_gyro_data;
-    static uint8_t * p_mapped_accel_data;
+
+    static float* p_smooth_accel_data;
+    static float* p_smooth_gyro_data;
+
+    static uint8_t* p_mapped_accel_data;
     static uint8_t* p_mapped_gyro_data;
+
+    static uint8_t* p_magnitude_mapped_accel_data;
+    static uint8_t* p_magnitude_mapped_gyro_data;
 
 
     /**
@@ -59,4 +64,6 @@ protected:
      * the virtual LED data.
      */
     static uint8_t (*p_virtual_leds)[3];
+    static uint8_t (*p_hsv_virtual_leds)[3];
+
 };

@@ -1,100 +1,69 @@
 #pragma once
 #include "LEDFilter.h"
-#include <cmath>
+#include <cstdlib>
+#include <ctime>
 #include <vector>
 #include <algorithm>
+#include "utils/hsv_to_rgb.cpp"
 
 class LEDFilter_Smooth : public LEDFilter {
 public:
-    LEDFilter_Smooth() {
-        // Initialize dots with positions, speeds, and colors
-        for (int i = 0; i < dot_count; ++i) {
-            dots[i].position = static_cast<float>(i * 20);
-            dots[i].speed = 0.1f * (i + 1);
-            dots[i].color[0] = 20; // Red
-            dots[i].color[1] = 70;
-            dots[i].color[2] = 60;
-            dots[i].direction = 1; // 1 for forward, -1 for backward
-        }
-        // Initialize color changes
-        for (int i = 0; i < dot_count; ++i) {
-            dots[i].color_target[0] = 255;
-            dots[i].color_target[1] = 255;
-            dots[i].color_target[2] = 255;
-            dots[i].color_speed = 0.001f; // Smooth color transition speed
-        }
+    LEDFilter_Smooth(float star_frequency_factor, float fade_speed)
+            : star_frequency_factor(star_frequency_factor), fade_speed(fade_speed) {
+        // Seed random number generator
+        std::srand(static_cast<unsigned int>(std::time(0)));
+
+        // Initialize LED colors to black
+        std::fill(&p_hsv_virtual_leds[0][0], &p_hsv_virtual_leds[0][0] + NUM_PIXELS * 3, 0);
     }
 
     void apply_filter() override {
-        // Update dot positions and colors
-        update_dots();
-        update_colors();
+        // Update star frequency based on gyroscope data and factor
+        star_frequency = static_cast<float>(*p_magnitude_mapped_gyro_data) * star_frequency_factor;
+        star_timer += star_frequency;
 
-        // Clear the LED strip
-        std::fill(&p_virtual_leds[0][0], &p_virtual_leds[0][0] + NUM_PIXELS * 3, 0);
-
-        // Draw dots with fading tails
-        for (int i = 0; i < NUM_PIXELS; ++i) {
-            for (int d = 0; d < dot_count; ++d) {
-                float pos = dots[d].position;
-                float distance = fabs(i - pos);
-                if (distance < TAIL_LENGTH) {
-                    float intensity = 1.0f - (distance / TAIL_LENGTH);
-                    p_virtual_leds[i][0] += static_cast<uint8_t>(dots[d].color[0] * intensity);
-                    p_virtual_leds[i][1] += static_cast<uint8_t>(dots[d].color[1] * intensity);
-                    p_virtual_leds[i][2] += static_cast<uint8_t>(dots[d].color[2] * intensity);
-                }
-            }
+        // Check if it's time to create a new star
+        if (star_timer >= 1.0f) {
+            create_star();
+            star_timer -= 1.0f; // Reset timer, but keep the fraction for smooth timing
         }
+
+        // Update star brightness and convert HSV to RGB
+        update_stars();
     }
 
 private:
-    static const int dot_count = 3;     // Number of dots
-    float TAIL_LENGTH = 5.0f; // Length of the fading tail
+    float star_timer = 0.0f; // Timer for creating new stars
+    float star_frequency; // Frequency of new stars
+    float fade_speed; // Speed of fading effect
+    float star_frequency_factor;
 
+    void create_star() {
+        int position = std::rand() % NUM_PIXELS; // Random position
+        uint8_t hue = *p_magnitude_mapped_accel_data; // Hue based on accel data
 
+        // Set the new star's properties
+        p_hsv_virtual_leds[position][0] = hue; // Hue
+        p_hsv_virtual_leds[position][1] = 255; // Saturation
+        p_hsv_virtual_leds[position][2] = 255; // Value - bright LED
+    }
 
-    struct Dot {
-        float position; // Position on the strip (0 to NUM_PIXELS-1)
-        float speed;    // Speed of the dot
-        int direction;  // Direction of movement (1 or -1)
-        uint8_t color[3]; // Current color of the dot
-        uint8_t color_target[3]; // Target color for smooth transition
-        float color_speed; // Speed of color transition
-    };
+    void update_stars() {
+        // Convert HSV to RGB and apply fading
+        for (int i = 0; i < NUM_PIXELS; ++i) {
+            uint8_t& hue = p_hsv_virtual_leds[i][0];
+            uint8_t& saturation = p_hsv_virtual_leds[i][1];
+            uint8_t& value = p_hsv_virtual_leds[i][2];
 
-    Dot dots[dot_count]; // Array to hold dots
+            // Convert HSV to RGB
+            hsv_to_rgb(hue, saturation, value, p_virtual_leds[i][0], p_virtual_leds[i][1], p_virtual_leds[i][2]);
 
-
-
-    // Function to update dot positions
-    void update_dots() {
-        for (int d = 0; d < dot_count; ++d) {
-            dots[d].position += dots[d].speed * dots[d].direction;
-            if (dots[d].position >= NUM_PIXELS || dots[d].position < 0) {
-                dots[d].direction *= -1; // Reverse direction when reaching limits
-                // Optional: change color target randomly
-//                dots[d].color_target[0] = static_cast<uint8_t>(rand() % 256);
-//                dots[d].color_target[1] = static_cast<uint8_t>(rand() % 256);
-//                dots[d].color_target[2] = static_cast<uint8_t>(rand() % 256);
+            // Update the HSV value for fading
+            if (value <= fade_speed) {
+                p_hsv_virtual_leds[i][2] = 0; // Ensure value doesn't go negative
+            } else {
+                p_hsv_virtual_leds[i][2] -= static_cast<uint8_t>(fade_speed);
             }
         }
     }
-
-    // Function to update dot colors
-    // Function to update dot colors
-    void update_colors() {
-        for (int d = 0; d < dot_count; ++d) {
-            for (int c = 0; c < 3; ++c) {
-                uint8_t current_color = dots[d].color[c];
-                uint8_t target_color = dots[d].color_target[c];
-                if (current_color < target_color) {
-                    dots[d].color[c] = std::min<uint8_t>(current_color + static_cast<uint8_t>(dots[d].color_speed * 255), target_color);
-                } else {
-                    dots[d].color[c] = std::max<uint8_t>(current_color - static_cast<uint8_t>(dots[d].color_speed * 255), target_color);
-                }
-            }
-        }
-    }
-
 };

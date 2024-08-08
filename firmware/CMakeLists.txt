@@ -24,7 +24,6 @@ endif ()
             src/main.cpp
             src/sysconfig.c
 
-            src/utils/utils.cpp
             src/utils/combine_bytes.h
             src/utils/map_value.h
             src/utils/gamma8_table.c
@@ -41,6 +40,7 @@ endif ()
             src/utils/power_toggle.c
             src/led_filters/LEDFilter_Wave.cpp
             src/led_filters/LEDFilter_BikeWheel.cpp
+            src/utils/hsv_to_rgb.cpp
     )
 
 add_executable(Lightbike ${LIGHTBIKE_FILES})
