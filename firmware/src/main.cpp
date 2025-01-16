@@ -28,6 +28,8 @@ float *LEDFilter::filter_sensor_data = sensor_data;
 uint8_t virtual_leds[NUM_PIXELS][3];
 uint8_t hsv_virtual_leds[NUM_PIXELS][3];
 volatile uint8_t device_status_field = 0;
+volatile uint8_t power_button_click_counts;
+volatile uint8_t mode_button_click_counts;
 
 
 uint8_t (*LEDFilter::p_virtual_leds)[3] = virtual_leds;
@@ -72,10 +74,50 @@ int main(void)
     uint32_t last_execution_time = 0;
 
     int result = 0;
+    uint32_t last_power_button_click_time = 0;
+    bool is_button_timer_init = false;
+    uint8_t button_count_bucket = 1;
+
+
+
     while (1)
     {
+        // ToDo: fügen etwas hinzu, das berechnet wie viele Zeit vert
         uint32_t current_time = osKernelGetTickCount();
         uint32_t elapsed_time = current_time - last_execution_time;
+
+
+        // ToDo: Finden es heraus welche Einheit verwendet wird
+        if (power_button_click_counts > 0)
+        {
+            if (!is_button_timer_init)
+            {
+                last_power_button_click_time = current_time;
+                is_button_timer_init = true;
+            }
+
+            // Check if the click count has increased without interruption
+            if (power_button_click_counts > button_count_bucket)
+            {
+                button_count_bucket = power_button_click_counts;
+                last_power_button_click_time = current_time; // Reset timer for uninterrupted clicks
+            }
+
+            uint32_t power_button_elapsed_time = current_time - last_power_button_click_time;
+
+            // Register command if time has passed and count is stable
+            if (power_button_elapsed_time > BUTTON_REGISTER_TIME)
+            {
+                power_button_click_modes_e mode = (power_button_click_modes_e) power_button_click_counts;
+                register_power_button_command(mode);
+
+                // Reset states after processing
+                power_button_click_counts = 0;
+                is_button_timer_init = false;
+                button_count_bucket = 1;
+            }
+        }
+
 
         // ToDo: fügen Zahlung von Frame Time Verbrechungen(wort?)
         if (elapsed_time >= FRAME_TIME_MS)
@@ -87,9 +129,6 @@ int main(void)
 
 
                 fetch_sensor_data(data_source_selection, sensor_data);
-
-
-
 
                 /* Apply the current filter as determined by the filter handler. */
                 call_current_led_filter(); //ToDo: switch to a switch case.

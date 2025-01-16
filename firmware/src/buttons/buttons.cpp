@@ -6,73 +6,70 @@
 
 LOG_MODULE(button_interrupt)
 
-/**
- * @brief Mode button IRQ function.
- *
- * This function is triggered by an interrupt from the mode button.
- * It rotates through different application states, changing the LED filter mode.
- */
-void mode_button_irq_function() {
-    
-    increment_state();  // Move to the next state
+
+void mode_button_irq_function()
+{
+
+    increment_filter_selection();
+    mode_button_click_counts ++;
+
 }
 
-/**
- * @brief Power button IRQ function.
- *
- * This function is triggered by an interrupt from the power button.
- * It is intended to turn the device on and off.
- * Note: The implementation details for turning off are pending.
- */
+
 void power_button_irq_function()
 {
-    if(DEVICE_STATUS_GET(device_status_field, status_on))
-    {
-        device_status_field &= ~DEVICE_STATUS_MASK(status_on);
-    } else
-    {
-        device_status_field |= DEVICE_STATUS_MASK(status_on);
-        device_status_field &= ~DEVICE_STATUS_MASK(status_cleared);
 
-
-        //ToDo: reset is cleared
-    }
-
+    power_button_click_counts++;
 
 }
 
-/**
- * @brief Initializes a button using GPIO pin and IRQ handler.
- *
- * Sets up a button with interrupt functionality on a specified GPIO pin.
- * This function configures the GPIO pin as an input, registers an interrupt
- * handler for rising edge detection, and enables the interrupt.
- * Errors are reported but not handled further, intended for debugging purposes.
- *
- * @param[in] gpio_pin GPIO pin number as per hardware documentation.
- * @param[in] irq_handler IRQ handler function pointer for button interrupt.
- * @return 0 if successful, -1 on failure.
- */
 int button_init(uint32_t gpio_pin, gpio_irq_cb_t irq_handler) {
     int result;
 
     // Set GPIO pin direction to input
     result = gpio_set_dir(gpio_pin, gpioPinDirInput);
     if (result == -1) {
-        return -1;  // Return error if setting direction fails
+        return -1;
     }
 
     // Register the IRQ handler for rising edge
     result = gpio_register_interrupt(gpio_pin, gpioIrqRisingEdge, irq_handler);
     if (result == -1) {
-        return -1;  // Return error if registering interrupt fails
+        return -1;
     }
 
     // Enable the interrupt on the GPIO pin
     result = gpio_enable_interrupt(gpio_pin);
     if (result == -1) {
-        return -1;  // Return error if enabling interrupt fails
+        return -1;
     }
 
-    return 0;  // Return success if all operations succeed
+    return 0;
+}
+
+
+void register_power_button_command(power_button_click_modes_e clicks)
+{
+    switch (clicks)
+    {
+        case change_data_source:
+            break;
+        case toggle_device_power:
+
+            if(DEVICE_STATUS_GET(device_status_field, status_on))
+            {
+                device_status_field &= ~DEVICE_STATUS_MASK(status_on);
+            } else
+            {
+                device_status_field |= DEVICE_STATUS_MASK(status_on);
+                device_status_field &= ~DEVICE_STATUS_MASK(status_cleared);
+            }
+
+
+
+            break;
+    }
+
+
+
 }

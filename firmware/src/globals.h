@@ -86,7 +86,9 @@
 #define FILTER_STAR_FADE_SPEED (4)
 
 #define FILTER_BIKE_FILTER_HANDLER (45)
-#define FRAME_TIME_MS (17)
+#define FRAME_TIME_MS (17) // ToDo: bestätigen den einheit
+#define BUTTON_REGISTER_TIME (500) //
+
 
 
 #define DEVICE_STATUS_GET(field, sel)       (((field) & (1 << sel))? 1 : 0)
@@ -111,5 +113,16 @@ typedef enum
 
 } data_source_e;
 
+
+typedef enum
+{
+    none = 0,
+    change_data_source ,
+    toggle_device_power
+} power_button_click_modes_e;
+
+
+extern volatile uint8_t power_button_click_counts;
+extern volatile uint8_t mode_button_click_counts;
 
 

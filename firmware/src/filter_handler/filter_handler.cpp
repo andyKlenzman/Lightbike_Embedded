@@ -43,7 +43,7 @@ LEDFilter* led_filters[MODE_MAX_VALUE] = {
  * @brief Cycles to the next state in the sequence.
  *        Wraps around to MODE_BASIC after MODE_OFF.
  */
-void increment_state()
+void increment_filter_selection()
 {
     current_state = static_cast<AppState>((current_state + 1) % MODE_MAX_VALUE);
 }
