@@ -43,19 +43,7 @@ protected:
      * This static member points to an array containing acceleration data. Derived
      * classes can use this pointer to access or modify the acceleration data.
      */
-    static float* p_accel_data;
-    static float* p_gyro_data;
-
-    static float* p_smooth_accel_data;
-    static float* p_smooth_gyro_data;
-
-    static uint8_t* p_mapped_accel_data;
-    static uint8_t* p_mapped_gyro_data;
-
-    static uint8_t* p_magnitude_mapped_accel_data;
-    static uint8_t* p_magnitude_mapped_gyro_data;
-
-
+    static float* filter_sensor_data;
     /**
      * @brief Pointer to the array of virtual LED data.
      *

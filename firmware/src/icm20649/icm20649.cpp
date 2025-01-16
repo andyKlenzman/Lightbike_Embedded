@@ -34,7 +34,6 @@ LOG_MODULE(ICM_20649)
 #define READ_BUFFER_SIZE_BYTES  (1)
 #define WRITE_BUFFER_SIZE_BYTES (1)
 
-// Define DEBUG_PRINT_ICM20649 to enable debug messages in read functions
 
 static int i2c_device;
 static uint8_t *p_read_buffer;
@@ -185,11 +184,14 @@ int icm_20649_read_accel_data(float accel_data[]) {
     uint8_t raw_accel_vals[6];
 
     // Read values from registers
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 6; i++)
+    {
         int retries = 0;
-        while (retries < MAX_REGISTER_READ_RETRIES) {
+        while (retries < MAX_REGISTER_READ_RETRIES)
+        {
             raw_accel_vals[i] = icm_20649_return_register_val(reg_addrs[i]);
-            if (raw_accel_vals[i] != (uint8_t)-1) {
+            if (raw_accel_vals[i] != (uint8_t)-1)
+            {
 #ifdef DEBUG_PRINT_ICM20649
                 LOG_DEBUG("icm_20649_read_accel_data: Success reading register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
 #endif
@@ -200,8 +202,13 @@ int icm_20649_read_accel_data(float accel_data[]) {
 #ifdef DEBUG_PRINT_ICM20649
             LOG_DEBUG("icm_20649_read_accel_data: Failed to read register 0x%02X (index %d), attempt %d.", reg_addrs[i], i, retries);
 #endif
+
+            //ToDo: Bestätigen ob diese Verzögerung funktioneren wird
+
+            osDelay(10);
         }
-        if (retries == MAX_REGISTER_READ_RETRIES) {
+        if (retries == MAX_REGISTER_READ_RETRIES)
+        {
 #ifdef DEBUG_PRINT_ICM20649
             LOG_DEBUG("icm_20649_read_accel_data: Failed to read register 0x%02X (index %d) after %d attempts.", reg_addrs[i], i, MAX_REGISTER_READ_RETRIES);
 #endif
@@ -210,10 +217,12 @@ int icm_20649_read_accel_data(float accel_data[]) {
     }
 
     // Combine bytes and compute acceleration values
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++)
+    {
         int high_idx = 2 * i;
         int low_idx = 2 * i + 1;
-        if (raw_accel_vals[high_idx] != (uint8_t)-1 && raw_accel_vals[low_idx] != (uint8_t)-1) {
+        if (raw_accel_vals[high_idx] != (uint8_t)-1 && raw_accel_vals[low_idx] != (uint8_t)-1)
+        {
             int16_t combined_val = (int16_t)combine_bytes(raw_accel_vals[high_idx], raw_accel_vals[low_idx]);
             accel_data[i] = (float)combined_val / ACCEL_FS_1024_LSB_PER_G;
         } else {
@@ -235,7 +244,8 @@ int icm_20649_read_accel_data(float accel_data[]) {
  */
 uint8_t last_valid_gyro_vals[6] = {0}; // Array to store last valid values
 
-int icm_20649_read_gyro_data(float gyro_data[]) {
+int icm_20649_read_gyro_data(float gyro_data[])
+{
     uint8_t reg_addrs[6] = {
             ICM_20649_B0_GYRO_XOUT_H,
             ICM_20649_B0_GYRO_XOUT_L,

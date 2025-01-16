@@ -30,7 +30,7 @@
 
 #define NUM_PIXELS (50)
 #define MAX_REGISTER_READ_RETRIES (50)
-#define DEBUG_PRINT_ICM20649 // uncomment to enable debug statements
+// #define DEBUG_PRINT_ICM20649 // comment to enable debug statements
 
 #define GPIO_PUSH_BTN_1 (100) //PB00
 #define GPIO_PUSH_BTN_2 (101) //PB01
@@ -85,6 +85,7 @@
 #define FILTER_STAR_FREQUENCY_FACTOR (.001)
 #define FILTER_STAR_FADE_SPEED (4)
 
+#define FILTER_BIKE_FILTER_HANDLER (45)
 #define FRAME_TIME_MS (17)
 
 
@@ -95,10 +96,20 @@
 extern volatile uint8_t device_status_field;
 
 
-typedef enum vg_attribute_e
-{
+
+typedef enum {
     status_on = 0,
     status_cleared
-} vg_attribute_e;
+} device_status_e;
+
+typedef enum
+{
+    accl = 0,
+    accl_smooth,
+    gyro,
+    gyro_smooth,
+
+} data_source_e;
+
 
 

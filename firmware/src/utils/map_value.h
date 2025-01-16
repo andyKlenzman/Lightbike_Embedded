@@ -1,3 +1,8 @@
+
+#pragma once
+
+
+
 #include <math.h>
 
 typedef enum {
@@ -17,7 +22,7 @@ typedef enum {
  * @param mode The mapping mode (signed, unsigned, or symmetrical).
  * @return The mapped value.
  */
-float map_value(float x, float in_min, float in_max, float out_min, float out_max, MapMode mode) {
+inline float map_value(float x, float in_min, float in_max, float out_min, float out_max, MapMode mode) {
     float mapped_value = 0;
 
     switch (mode) {
@@ -48,3 +53,16 @@ float map_value(float x, float in_min, float in_max, float out_min, float out_ma
 
     return mapped_value;
 }
+
+
+inline void map_sensor_values(float* data)
+{
+
+    for (int i = 0; i < 3; ++i)
+    {
+        data[i] = map_value(data[i], ACCEL_MAP_IN_MIN, ACCEL_MAP_IN_MAX, ACCEL_MAP_OUT_MIN, ACCEL_MAP_OUT_MAX, MAP_MODE_UNSIGNED);
+    }
+
+
+}
+

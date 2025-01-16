@@ -47,3 +47,18 @@ void cli_info(const char* line, uint16_t len)
 
 }
 
+void cli_light_mode(const char* line, uint8_t data_source, uint8_t filter)
+{
+    LOG_INFO("CLI: LightMode");
+
+    // virtual_gear_recall_scene(addr_type, addr, scene_id);
+}
+
+
+//if(cli_get_uint8(line, len, &addr_type, 0) != 0) return;
+//
+//uint8_t addr;
+//if(cli_get_uint8(line, len, &addr, 1) != 0) return;
+//
+//uint8_t scene_id;
+//if(cli_get_uint8(line, len, &scene_id, 2) != 0) return;

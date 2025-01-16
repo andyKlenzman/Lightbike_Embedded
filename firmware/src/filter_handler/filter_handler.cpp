@@ -26,7 +26,7 @@ LEDFilter_Basic led_filter_basic;
 LEDFilter_Wave led_filter_wave(FILTER_WAVE_SMOOTHING,
                                FILTER_WAVE_FREQUENCY,
                                FILTER_WAVE_AMPLITUDE);
-LEDFilter_BicycleWheel led_filter_bike_wheel;
+LEDFilter_BicycleWheel led_filter_bike_wheel(FILTER_BIKE_FILTER_HANDLER);
 
 // Global variable to keep track of the current state
 volatile AppState current_state = MODE_BASIC;
@@ -43,11 +43,13 @@ LEDFilter* led_filters[MODE_MAX_VALUE] = {
  * @brief Cycles to the next state in the sequence.
  *        Wraps around to MODE_BASIC after MODE_OFF.
  */
-void increment_state() {
+void increment_state()
+{
     current_state = static_cast<AppState>((current_state + 1) % MODE_MAX_VALUE);
 }
 
 
-void call_current_led_filter() {
+void call_current_led_filter()
+{
     led_filters[current_state]->apply_filter();
 }

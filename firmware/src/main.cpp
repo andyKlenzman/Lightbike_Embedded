@@ -21,45 +21,25 @@
 
 LOG_MODULE(main)
 
-/* Global data buffers */
-float accel_data[3];
-float gyro_data[3];
-float smooth_accel_data[3];
-float smooth_gyro_data[3];
-uint8_t mapped_accel_data[3];
-uint8_t mapped_gyro_data[3];
-uint8_t magnitude_mapped_accel_data;
-uint8_t magnitude_mapped_gyro_data;
+float sensor_data [3];
+float *LEDFilter::filter_sensor_data = sensor_data;
+
+
 uint8_t virtual_leds[NUM_PIXELS][3];
 uint8_t hsv_virtual_leds[NUM_PIXELS][3];
 volatile uint8_t device_status_field = 0;
 
 
-/* Pointers for LEDFilter access */
-float *LEDFilter::p_accel_data = accel_data;
-float *LEDFilter::p_gyro_data = gyro_data;
-
-float *LEDFilter::p_smooth_accel_data = smooth_accel_data;
-float *LEDFilter::p_smooth_gyro_data = smooth_gyro_data;
-
-uint8_t *LEDFilter::p_mapped_accel_data = mapped_accel_data;
-uint8_t *LEDFilter::p_mapped_gyro_data = mapped_gyro_data;
-
-uint8_t *LEDFilter::p_magnitude_mapped_accel_data = &magnitude_mapped_accel_data;
-uint8_t *LEDFilter::p_magnitude_mapped_gyro_data = &magnitude_mapped_gyro_data;
-
 uint8_t (*LEDFilter::p_virtual_leds)[3] = virtual_leds;
 uint8_t (*LEDFilter::p_hsv_virtual_leds)[3] = hsv_virtual_leds;
 
-//
-volatile bool flag_toggle_system_power = false;
+data_source_e data_source_selection = accl;
 
 
-void process_data ();
+void fetch_sensor_data (data_source_e source, float* selected_sensor_data);
 
 int main(void)
 {
-    int result;
 
     /* Initialize components */
     if (led_strip_init(NUM_PIXELS) == -1) {
@@ -91,12 +71,13 @@ int main(void)
 
     uint32_t last_execution_time = 0;
 
+    int result = 0;
     while (1)
     {
         uint32_t current_time = osKernelGetTickCount();
         uint32_t elapsed_time = current_time - last_execution_time;
 
-        // ToDo: fügen Zahlung von Frame Time Vio
+        // ToDo: fügen Zahlung von Frame Time Verbrechungen(wort?)
         if (elapsed_time >= FRAME_TIME_MS)
         {
             last_execution_time = current_time;
@@ -104,22 +85,11 @@ int main(void)
             if (DEVICE_STATUS_GET(device_status_field, status_on))
             {
 
-                /* Read sensor data */
-                if ((result = icm_20649_read_gyro_data(gyro_data)) == -1)
-                {
-                    // LOG_ERROR("icm_20649_read_gyro_data failed.");
-                } else {
-                    LOG_DEBUG("GYRO data: X=%f, Y=%f, Z=%f\n", gyro_data[0], gyro_data[1], gyro_data[2]);
-                }
 
-                if ((result = icm_20649_read_accel_data(accel_data)) == -1) {
-                    LOG_ERROR("icm_20649_read_accel_data failed.");
-                } else {
-                    LOG_DEBUG("Accelerometer data: X=%f, Y=%f, Z=%f\n", accel_data[0], accel_data[1], accel_data[2]);
-                }
+                fetch_sensor_data(data_source_selection, sensor_data);
 
-                /* Process sensor data into useful values. Available to all LED_Filters */
-                process_data();
+
+
 
                 /* Apply the current filter as determined by the filter handler. */
                 call_current_led_filter(); //ToDo: switch to a switch case.
@@ -146,33 +116,66 @@ int main(void)
 }
 
 
-void process_data (){
+
+// ToDo: Bieten nur ein Daten Punkt dem mit ein Taste drunk verfügbar wird
+void fetch_sensor_data (data_source_e source, float* data) {
+    int result = 0;
+
     /* The smoothing function blends the new value with the previous. The higher the smoothing_factor,
      * the more weight that is given to the previous value. */
-    for (int i = 0; i < 3; i++)
+
+    switch (source)
     {
-        smooth_accel_data[i] = (smooth_accel_data[i] * FILTER_SMOOTHING_FACTOR + accel_data[i]) / (FILTER_SMOOTHING_FACTOR + 1);
-        smooth_gyro_data[i] = (smooth_gyro_data[i] * FILTER_SMOOTHING_FACTOR + gyro_data[i]) / (FILTER_SMOOTHING_FACTOR + 1);
+
+
+        case accl:
+            result = icm_20649_read_accel_data(data);
+            if (result == -1) {
+                LOG_ERROR("icm_20649_read_gyro_data failed.");
+            }
+            break;
+        case accl_smooth:
+
+            result = icm_20649_read_accel_data(data);
+            if (result == -1) {
+                LOG_ERROR("icm_20649_read_gyro_data failed.");
+            }
+
+
+            for (int i = 0; i < 3; i++) {
+                data[i] = (data[i] * FILTER_SMOOTHING_FACTOR + data[i]) / (FILTER_SMOOTHING_FACTOR + 1);
+                data[i] = (data[i] * FILTER_SMOOTHING_FACTOR + data[i]) / (FILTER_SMOOTHING_FACTOR + 1);
+            }
+
+            break;
+        case gyro:
+
+            result = icm_20649_read_gyro_data(data);
+            if (result == -1) {
+                LOG_ERROR("icm_20649_read_accel_data failed.");
+            }
+
+            break;
+        case gyro_smooth:
+
+            result = icm_20649_read_gyro_data(data);
+            if (result == -1) {
+                LOG_ERROR("icm_20649_read_accel_data failed.");
+            }
+
+            for (int i = 0; i < 3; i++) {
+                data[i] = (data[i] * FILTER_SMOOTHING_FACTOR + data[i]) / (FILTER_SMOOTHING_FACTOR + 1);
+                data[i] = (data[i] * FILTER_SMOOTHING_FACTOR + data[i]) / (FILTER_SMOOTHING_FACTOR + 1);
+            }
+            break;
+
+
     }
 
+    map_sensor_values(data);
 
-    for (int i = 0; i < 3; i++)
-    {
-        mapped_accel_data[i] = map_value(smooth_accel_data[i], ACCEL_MAP_IN_MIN, ACCEL_MAP_IN_MAX, ACCEL_MAP_OUT_MIN, ACCEL_MAP_OUT_MAX, MAPPING_MODE);
-        mapped_gyro_data[i] = map_value(smooth_gyro_data[i], GYRO_MAP_IN_MIN, GYRO_MAP_IN_MAX, GYRO_MAP_OUT_MAX, GYRO_MAP_OUT_MIN, MAPPING_MODE);
-    }
 
-    // Calculate signal magnitude for accel data
-
-    uint16_t magnitude_accel_data_bucket = 0;
-    uint16_t magnitude_gyro_data_bucket = 0;
-
-    for (int i = 0; i < 3; i++) {
-        magnitude_accel_data_bucket += mapped_accel_data[i];
-        magnitude_gyro_data_bucket += mapped_gyro_data[i];
-    }
-
-    // Compute averages and ensure they fit in a uint8_t range
-    magnitude_mapped_accel_data = static_cast<uint8_t>(std::clamp(magnitude_accel_data_bucket / 3, 0, 255));
-    magnitude_mapped_gyro_data = static_cast<uint8_t>(std::clamp(magnitude_gyro_data_bucket / 3, 0, 255));
 }
+
+
+

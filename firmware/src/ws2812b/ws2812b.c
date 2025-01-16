@@ -106,7 +106,6 @@ int led_strip_init(int num_pixels) {
     init_spi_lookup_table();
     g_led_strip_num_pixels = num_pixels;
 
-
     /* Turn on LED */
     gpio_set_dir(LEDS_POWER_PIN, gpioPinDirOutput);
     result = gpio_set(LEDS_POWER_PIN, gpioLogicHigh);
@@ -114,9 +113,6 @@ int led_strip_init(int num_pixels) {
         LOG_DEBUG("Failed to turn the LEDS_POWER_PIN to HIGH");
 
     };
-
-
-
 
     buffer_size_bytes = LED_DATA_PACKET_SIZE * g_led_strip_num_pixels; // 8 * 50 = 450 bytes
     g_led_strip_data_buf = (uint8_t *) malloc(buffer_size_bytes);

@@ -28,10 +28,14 @@ void power_button_irq_function()
 {
     if(DEVICE_STATUS_GET(device_status_field, status_on))
     {
-        device_status_field &= ~DEVICE_STATUS_MASK(status_cleared);
+        device_status_field &= ~DEVICE_STATUS_MASK(status_on);
     } else
     {
-        device_status_field |= DEVICE_STATUS_MASK(status_cleared); // if
+        device_status_field |= DEVICE_STATUS_MASK(status_on);
+        device_status_field &= ~DEVICE_STATUS_MASK(status_cleared);
+
+
+        //ToDo: reset is cleared
     }
 
 
