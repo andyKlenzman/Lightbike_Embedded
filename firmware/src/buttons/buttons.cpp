@@ -24,9 +24,17 @@ void mode_button_irq_function() {
  * It is intended to turn the device on and off.
  * Note: The implementation details for turning off are pending.
  */
-void power_button_irq_function() {
-    LOG_DEBUG("POWER BUTTON FIRE");
-    flag_toggle_system_power = true;  // Flag variable to signal events
+void power_button_irq_function()
+{
+    if(DEVICE_STATUS_GET(device_status_field, status_on))
+    {
+        device_status_field &= ~DEVICE_STATUS_MASK(status_cleared);
+    } else
+    {
+        device_status_field |= DEVICE_STATUS_MASK(status_cleared); // if
+    }
+
+
 }
 
 /**

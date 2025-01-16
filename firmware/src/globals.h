@@ -21,10 +21,10 @@
  */
 #pragma once
 #include <stdbool.h>
+#include <stdint.h>
 
 
-extern volatile bool flag_toggle_system_power;  // Flag variable to signal events
-extern volatile bool is_system_on;
+
 
 
 
@@ -88,14 +88,17 @@ extern volatile bool is_system_on;
 #define FRAME_TIME_MS (17)
 
 
+#define DEVICE_STATUS_GET(field, sel)       (((field) & (1 << sel))? 1 : 0)
+#define DEVICE_STATUS_MASK(sel)             (1 << sel)
 
 
+extern volatile uint8_t device_status_field;
 
 
-
-
-
-
-
+typedef enum vg_attribute_e
+{
+    status_on = 0,
+    status_cleared
+} vg_attribute_e;
 
 

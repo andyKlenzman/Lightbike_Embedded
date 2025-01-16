@@ -37,10 +37,28 @@ endif ()
             src/buttons/buttons.cpp
             src/filter_handler/filter_handler.cpp
             src/buttons/buttons.h
-            src/utils/power_toggle.c
             src/led_filters/LEDFilter_Wave.cpp
             src/led_filters/LEDFilter_BikeWheel.cpp
             src/utils/hsv_to_rgb.cpp
+
+
+            # CLI
+            src/cli/cli.c
+            src/cli/cli_commands.c
+            src/cli/cli_helper.c
+
+           src/cli/cli.h
+#            src/cli/cli_commands.h
+#            src/cli/cli_helper.h
+
+            #            src/cli/SEGGER/SEGGER.h
+#            src/cli/SEGGER/SEGGER_RTT.c
+#            src/cli/SEGGER/SEGGER_RTT.h
+#            src/cli/SEGGER/SEGGER_RTT_printf.c
+
+
+
+
     )
 
 add_executable(Lightbike ${LIGHTBIKE_FILES})

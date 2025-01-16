@@ -2,7 +2,7 @@
 SET(CMAKE_C_LINK_FLAGS "")
 SET(CMAKE_CXX_LINK_FLAGS "")
 
-set(PYTHON_EXECUTABLE "/Users/andyklenzman/CLionProjects/coldwave-evk/venv/bin/python3.9")
+set(PYTHON_EXECUTABLE "/Users/andyklenzman/CLionProjects/LightBike/venv/bin/python3.9")
 find_package (Python COMPONENTS Interpreter Development)
 message(STATUS "Found my Python interpreter: ${Python_EXECUTABLE}")
 
@@ -102,6 +102,7 @@ include_directories(
         ${CMAKE_CURRENT_LIST_DIR}/include
         ${CMAKE_CURRENT_LIST_DIR}/include/platform/
         ${CMAKE_CURRENT_LIST_DIR}/include/crypto/
+        ${CMAKE_CURRENT_LIST_DIR}/include/kernel/
         )
 
 string(REPLACE ";" " " STRING_CW_COMMON_LINKER_FLAGS "${CW_COMMON_LINKER_FLAGS}")
