@@ -1,17 +1,7 @@
-# Lightbike
+# Lightbike_Embedded
 
-Lightbike enhances bicycle visibility and aesthetics through motion-responsive LED patterns. 
+Embedded firmware for motion-responsive bike lights, built during my internship at [ImagineOn](https://www.imagineon.de/).
 
-The system employs a ICM20649 accelerometer and gyroscope and an EFR32MG24 MCU mounted on both of a bike axises, with connect WS2812b LEDs wound through the spokes. 
+An ICM20649 IMU is mounted on each axle of the bike. The EFR32MG24 MCU reads acceleration and gyroscope data, applies filters, and drives WS2812b LEDs wound through the spokes over SPI. Two buttons let the rider power off or cycle through light modes.
 
-Motion data is collected via the ICM20649 sensor, and LEDs are driven by using SPI. 
-
-There are two buttons to power off the device and switch through various filter modes.
-
-This project was part of my Embedded Software Engineering internship at [ImagineOn](https://www.imagineon.de/).
-
-## Contact
-
-Author: Andy Klenzman
-
-Email: ak@imagineon.de
+This is the companion firmware to the [Bike-Light](https://github.com/andyklenzman/Bike-Light) React Native app.
